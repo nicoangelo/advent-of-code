@@ -25,9 +25,13 @@ func (p PositionFuelMap) Less(i, j int) bool { return p[i].SumFuel < p[j].SumFue
 func main() {
 	input_path := flag.String("input", "./input", "The input data")
 	crab_positions, max := getFileContents(*input_path)
-	res1 := CalculatePositionFuels(crab_positions, max)
+	res1 := CalculateLinearPositionFuels(crab_positions, max)
 	part1 := res1[0]
 	fmt.Println("Part 1 - position:", part1.Position, "/ Fuel:", part1.SumFuel)
+
+	res2 := CalculateSummedPositionFuels(crab_positions, max)
+	part2 := res2[0]
+	fmt.Println("Part 2 - position:", part2.Position, "/ Fuel:", part2.SumFuel)
 }
 
 func getFileContents(filepath string) (values []int, max int) {
@@ -48,7 +52,7 @@ func getFileContents(filepath string) (values []int, max int) {
 	return values, max
 }
 
-func CalculatePositionFuels(crab_positions []int, max int) PositionFuelMap {
+func CalculatePositionFuels(crab_positions []int, max int, summer func(crabPos int, currentPos int) int) PositionFuelMap {
 	position_fuels := make(PositionFuelMap, max+1)
 	for i := range position_fuels {
 		position_fuels[i] = PositionFuel{i, 0}
@@ -56,11 +60,30 @@ func CalculatePositionFuels(crab_positions []int, max int) PositionFuelMap {
 
 	for _, crab_pos := range crab_positions {
 		for i := 0; i < len(position_fuels); i++ {
-			diff := int(math.Abs(float64(crab_pos - position_fuels[i].Position)))
+			diff := summer(crab_pos, position_fuels[i].Position)
 			position_fuels[i].SumFuel += diff
 		}
 	}
 
 	sort.Sort(position_fuels)
 	return position_fuels
+}
+
+func CalculateLinearPositionFuels(crab_positions []int, max int) PositionFuelMap {
+	return CalculatePositionFuels(
+		crab_positions,
+		max,
+		func(crabPos int, currentPos int) int {
+			return int(math.Abs(float64(crabPos - currentPos)))
+		})
+}
+
+func CalculateSummedPositionFuels(crab_positions []int, max int) PositionFuelMap {
+	return CalculatePositionFuels(
+		crab_positions,
+		max,
+		func(crabPos int, currentPos int) int {
+			diff := int(math.Abs(float64(crabPos - currentPos)))
+			return (diff * (diff + 1)) / 2
+		})
 }

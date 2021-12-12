@@ -9,10 +9,18 @@ func TestGetFileContents(t *testing.T) {
 	}
 }
 
-func TestGetLeastExpensivePosition(t *testing.T) {
+func TestGetLeastExpensiveLinearFuelPosition(t *testing.T) {
 	crabs, max := getFileContents("./example")
-	res := CalculatePositionFuels(crabs, max)
-	if res[0].Position != 2 {
-		t.Fatalf("Least expensive position wrong, got: %d, want: %d", res, 2)
+	res := CalculateLinearPositionFuels(crabs, max)
+	if res[0].SumFuel != 37 {
+		t.Fatalf("Least expensive consumption wrong, got: %d, want: %d", res[0].SumFuel, 37)
+	}
+}
+
+func TestGetLeastExpensiveSummedFuelPosition(t *testing.T) {
+	crabs, max := getFileContents("./example")
+	res := CalculateSummedPositionFuels(crabs, max)
+	if res[0].SumFuel != 168 {
+		t.Fatalf("Least expensive position (linear calc) wrong, got: %d, want: %d", res[0].SumFuel, 168)
 	}
 }
