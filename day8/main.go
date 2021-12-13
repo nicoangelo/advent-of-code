@@ -9,50 +9,35 @@ import (
 	"strings"
 )
 
-var digitSegmentCount = map[int]int{
-	1: 2,
-	2: 5,
-	3: 5,
-	4: 4,
-	5: 5,
-	6: 6,
-	7: 3,
-	8: 7,
-	9: 6,
-	0: 6,
+/*
+ * Using the sum of frequencies for all
+ * segments, and given the fact all digits
+ * are present in the input, we can easily
+ * resolve the digits.
+ *   aaaa    =>    8888
+ *  b    c   =>   6    8
+ *  b    c   =>   6    8
+ *   dddd    =>    7777
+ *  e    f   =>   4    9
+ *  e    f   =>   4    9
+ *   gggg    =>    7777
+ */
+
+var digitSums = map[int]int{
+	17: 1,
+	34: 2,
+	39: 3,
+	30: 4,
+	37: 5,
+	41: 6,
+	25: 7,
+	49: 8,
+	45: 9,
+	42: 0,
 }
 
 var uniqueSegmentCountDigits = [4]int{
 	1, 4, 7, 8,
-}
-
-type Entry struct {
-	SignalPatterns      []*Signal
-	OutputValuePatterns []*Signal
-}
-
-func (entry Entry) String() string {
-	res := ""
-	for _, v := range entry.SignalPatterns {
-		res += v.String()
-	}
-	res += "|"
-	for _, v := range entry.OutputValuePatterns {
-		res += v.String()
-	}
-	return res
-}
-
-func (signal Signal) String() string {
-	if signal.Digit != -1 {
-		return fmt.Sprint(signal.Digit)
-	}
-	return "."
-}
-
-type Signal struct {
-	Pattern string
-	Digit   int
 }
 
 func main() {
@@ -60,7 +45,13 @@ func main() {
 	entries := getFileContents(*input_path)
 	part1 := countUniqueOutputs(entries)
 	fmt.Println("Part 1:", part1)
-	resolveSignalsToDigits(entries)
+
+	numbers := resolveOutputToNumbers(entries)
+	sum := 0
+	for _, v := range numbers {
+		sum += v
+	}
+	fmt.Println("Part 2:", sum)
 }
 
 func getFileContents(filepath string) (entries []*Entry) {
@@ -97,8 +88,12 @@ func getFileContents(filepath string) (entries []*Entry) {
 func parseSignals(token string) (signals []*Signal) {
 	signal_tokens := strings.Split(token, " ")
 	for _, v := range signal_tokens {
+		signal := new(Signal)
 		if v != "" {
-			signals = append(signals, &Signal{v, -1})
+			signal.Segments = make(map[rune]bool, 0)
+			signal.activateSegmentsByString(v)
+			signal.Digit = -1
+			signals = append(signals, signal)
 		}
 	}
 	return signals
@@ -108,7 +103,7 @@ func countUniqueOutputs(entries []*Entry) int {
 	sum := 0
 	for _, entry := range entries {
 		for _, output := range entry.OutputValuePatterns {
-			patternLength := len(output.Pattern)
+			patternLength := output.GetSegmentCount()
 			if patternLength == 2 ||
 				patternLength == 3 ||
 				patternLength == 4 ||
@@ -120,27 +115,19 @@ func countUniqueOutputs(entries []*Entry) int {
 	return sum
 }
 
-func resolveSignalsToDigits(entries []*Entry) int {
+func resolveOutputToNumbers(entries []*Entry) (numbers []int) {
+	numbers = make([]int, 0)
 	for _, entry := range entries {
-		for _, signal := range entry.SignalPatterns {
-			if v, ok := getUniqueCandidate(signal.Pattern); ok {
-				signal.Digit = v
-			}
+		inputRuneFrequency := make(map[rune]int, 0)
+		for _, signal := range entry.Signals {
+			signal.addToRuneCount(inputRuneFrequency)
 		}
+		outputNumber := 0
 		for _, output := range entry.OutputValuePatterns {
-			if v, ok := getUniqueCandidate(output.Pattern); ok {
-				output.Digit = v
-			}
+			frequency := output.sumWithFrequencies(inputRuneFrequency)
+			outputNumber = outputNumber*10 + digitSums[frequency]
 		}
+		numbers = append(numbers, outputNumber)
 	}
-	return 0
-}
-
-func getUniqueCandidate(pattern string) (digit int, ok bool) {
-	for _, digit := range uniqueSegmentCountDigits {
-		if len(pattern) == digitSegmentCount[digit] {
-			return digit, true
-		}
-	}
-	return -1, false
+	return numbers
 }
