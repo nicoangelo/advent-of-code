@@ -8,12 +8,13 @@ import (
 
 func TestGetFileContents(t *testing.T) {
 	heightMap := getFileContents("./example")
-	test := len(heightMap)
+	test := len(heightMap.Values)
 	assert.Equal(t, 5, test)
 }
 
 func TestCalculateRiskLevel(t *testing.T) {
 	heightMap := getFileContents("./example")
-	test := calculateRiskLevel(heightMap)
+	lp := findLowPoints(heightMap)
+	test := calculateRiskLevel(lp)
 	assert.Equal(t, 15, test)
 }
