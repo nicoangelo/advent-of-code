@@ -23,6 +23,6 @@ func TestCalculateBasinSize(t *testing.T) {
 	heightMap := getFileContents("./example")
 	lp := findLowPoints(heightMap)
 	basins := findBasinsFromLowPoints(lp, heightMap)
-	test := calculateTotalBasinSize(basins)
+	test := getFinalTopNBasinSizes(3, basins)
 	assert.Equal(t, 1134, test)
 }

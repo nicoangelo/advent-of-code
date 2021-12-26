@@ -5,6 +5,7 @@ import (
 	"flag"
 	"log"
 	"os"
+	"sort"
 )
 
 func main() {
@@ -15,7 +16,7 @@ func main() {
 	println(part1)
 
 	basins := findBasinsFromLowPoints(lowPoints, heightMap)
-	part2 := calculateTotalBasinSize(basins)
+	part2 := getFinalTopNBasinSizes(3, basins)
 	println(part2)
 }
 
@@ -80,10 +81,16 @@ func findBasinsFromLowPoints(lowPoints []*CoordinateValue, system *CoordinateSys
 	return basins
 }
 
-func calculateTotalBasinSize(basins []*Basin) int {
-	total := 0
-	for _, v := range basins {
-		total += len(v.Coordinates)
+func getFinalTopNBasinSizes(topN int, basins []*Basin) int {
+	total := 1
+	sort.Slice(basins, func(i, j int) bool {
+		return len(basins[i].Coordinates) > len(basins[j].Coordinates)
+	})
+	for i, v := range basins {
+		total *= len(v.Coordinates)
+		if i+1 == topN {
+			break
+		}
 	}
 	return total
 }
