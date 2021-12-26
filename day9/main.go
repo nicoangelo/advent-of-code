@@ -13,6 +13,10 @@ func main() {
 	lowPoints := findLowPoints(heightMap)
 	part1 := calculateRiskLevel(lowPoints)
 	println(part1)
+
+	basins := findBasinsFromLowPoints(lowPoints, heightMap)
+	part2 := calculateTotalBasinSize(basins)
+	println(part2)
 }
 
 func getFileContents(filepath string) (heightMap *CoordinateSystem) {
@@ -62,4 +66,24 @@ func calculateRiskLevel(lowPoints []*CoordinateValue) int {
 		riskLevel += v.Value + 1
 	}
 	return riskLevel
+}
+
+func findBasinsFromLowPoints(lowPoints []*CoordinateValue, system *CoordinateSystem) []*Basin {
+	basins := make([]*Basin, 0)
+	for _, v := range lowPoints {
+		basin := &Basin{[]*CoordinateValue{v}}
+		for basin.TryExpand(system) {
+			// continue
+		}
+		basins = append(basins, basin)
+	}
+	return basins
+}
+
+func calculateTotalBasinSize(basins []*Basin) int {
+	total := 0
+	for _, v := range basins {
+		total += len(v.Coordinates)
+	}
+	return total
 }

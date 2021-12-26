@@ -18,3 +18,11 @@ func TestCalculateRiskLevel(t *testing.T) {
 	test := calculateRiskLevel(lp)
 	assert.Equal(t, 15, test)
 }
+
+func TestCalculateBasinSize(t *testing.T) {
+	heightMap := getFileContents("./example")
+	lp := findLowPoints(heightMap)
+	basins := findBasinsFromLowPoints(lp, heightMap)
+	test := calculateTotalBasinSize(basins)
+	assert.Equal(t, 1134, test)
+}
