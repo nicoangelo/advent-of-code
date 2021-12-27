@@ -34,3 +34,15 @@ func TestStepHundredIterations(t *testing.T) {
 	}
 	assert.Equal(t, 1656, test)
 }
+
+func TestStepUntilSynchronized(t *testing.T) {
+	heightMap := getFileContents("./example")
+	i := 0
+	for i = 1; true; i++ {
+		flashes := heightMap.Step()
+		if flashes == 100 {
+			break
+		}
+	}
+	assert.Equal(t, 195, i)
+}

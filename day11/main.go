@@ -15,7 +15,17 @@ func main() {
 	for i := 1; i <= 100; i++ {
 		totalFlashes += octopuses.Step()
 	}
-	fmt.Print(totalFlashes)
+	fmt.Println(totalFlashes)
+
+	octopuses = getFileContents(*input_path)
+	i := 0
+	for i = 1; true; i++ {
+		flashes := octopuses.Step()
+		if flashes == 100 {
+			break
+		}
+	}
+	fmt.Println(i)
 }
 
 func getFileContents(filepath string) (octopuses *CoordinateSystem) {
