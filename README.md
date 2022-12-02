@@ -1,8 +1,10 @@
-# Advent of Code 2021
+# Advent of Code
 
-My take on [Advent of Code 2021](https://adventofcode.com/2021).
+My take on [Advent of Code](https://adventofcode.com/).
 
-I've chosen to do this using [Go](https://go.dev/), since I wanted to get deeper into that language for quite some time. So this is the perfect excuse to actually do it.
+After giving up half-way through the challenges last year, I'll give it another try this year.
+
+I've chosen to do this using [Go](https://go.dev/), since I've already use it for some while and want to get better.
 
 ## References
 
