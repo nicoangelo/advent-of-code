@@ -1,6 +1,8 @@
 package day4
 
-import "strconv"
+import (
+	"fmt"
+)
 
 type CleaningPairs struct {
 	Pair1 *Pair
@@ -23,20 +25,9 @@ type Pair struct {
 	End   int
 }
 
-func newCleaningPairFromTokens(tokens []string) *CleaningPairs {
-	pair1Start, _ := strconv.Atoi(tokens[0])
-	pair1End, _ := strconv.Atoi(tokens[1])
-	pair2Start, _ := strconv.Atoi(tokens[2])
-	pair2End, _ := strconv.Atoi(tokens[3])
-
-	return &CleaningPairs{
-		&Pair{
-			pair1Start,
-			pair1End,
-		},
-		&Pair{
-			pair2Start,
-			pair2End,
-		},
-	}
+func newCleaningPairFromTokens(line string) *CleaningPairs {
+	p1 := &Pair{}
+	p2 := &Pair{}
+	fmt.Sscanf(line, "%d-%d,%d-%d", &p1.Start, &p1.End, &p2.Start, &p2.End)
+	return &CleaningPairs{p1, p2}
 }
