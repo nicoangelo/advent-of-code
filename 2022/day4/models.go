@@ -14,6 +14,10 @@ func (cp *CleaningPairs) IsAnyFullyContained() bool {
 	return fullyContains(cp.Pair1, cp.Pair2) || fullyContains(cp.Pair2, cp.Pair1)
 }
 
+func (cp *CleaningPairs) IsAnyOverlapping() bool {
+	return cp.Pair1.Start <= cp.Pair2.End && cp.Pair2.Start <= cp.Pair1.End
+}
+
 type Pair struct {
 	Start int
 	End   int
