@@ -7,7 +7,7 @@ import (
 )
 
 // ReadInputFile reads the file from filepath and returns an array
-// of string wwith each element representing one line
+// of string with each element representing one line
 func ReadInputFile(filepath string) (lines []string) {
 	file, err := os.Open(filepath)
 
