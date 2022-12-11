@@ -1,6 +1,7 @@
 package day7
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -64,14 +65,14 @@ func (h *History) ToFiletree() (root *Directory) {
 	return root
 }
 
-func (dir Directory) FindByMaxSize(maxSize int) (res []Directory) {
+func (dir Directory) FindByPredicate(p func(Directory) bool) (res []Directory) {
 	res = make([]Directory, 0)
 
-	if dir.GetTotalSize() <= maxSize {
+	if p(dir) {
 		res = append(res, dir)
 	}
 	for _, d := range *dir.Directories {
-		res = append(res, d.FindByMaxSize(maxSize)...)
+		res = append(res, d.FindByPredicate(p)...)
 	}
 	return res
 }
@@ -84,4 +85,8 @@ func (dir Directory) GetTotalSize() (sum int) {
 		sum += d.GetTotalSize()
 	}
 	return sum
+}
+
+func (d Directory) String() string {
+	return fmt.Sprintf("%s: %d", d.Name, d.GetTotalSize())
 }

@@ -1,5 +1,9 @@
 package day7
 
+import (
+	"sort"
+)
+
 func parseHistoryLines(lines []string) (res *History) {
 	res = &History{&[]Command{}}
 	var currentContext *Command
@@ -25,7 +29,7 @@ func parseHistoryLines(lines []string) (res *History) {
 func part1(lines []string) (res int) {
 	h := parseHistoryLines(lines)
 	ft := h.ToFiletree()
-	dirs := ft.FindByMaxSize(100000)
+	dirs := ft.FindByPredicate(func(d Directory) bool { return d.GetTotalSize() <= 100000 })
 
 	for _, d := range dirs {
 		res += d.GetTotalSize()
@@ -33,6 +37,19 @@ func part1(lines []string) (res int) {
 	return res
 }
 
-func part2(lines []string) int {
-	return 0
+func part2(lines []string) (res int) {
+	h := parseHistoryLines(lines)
+	ft := h.ToFiletree()
+	used := ft.GetTotalSize()
+
+	disk_size := 70000000
+	needed := 30000000
+	to_delete := needed - (disk_size - used)
+
+	dirs := ft.FindByPredicate(func(d Directory) bool { return d.GetTotalSize() >= to_delete })
+	sort.Slice(dirs, func(i, j int) bool {
+		return dirs[i].GetTotalSize() < dirs[j].GetTotalSize()
+	})
+	return dirs[0].GetTotalSize()
+
 }
