@@ -1,5 +1,9 @@
 package day8
 
+import (
+	"github.com/nicoangelo/advent-of-code-2022/shared"
+)
+
 const ASCII_CODE_ZERO = 48
 
 type TreeGrid struct {
@@ -36,7 +40,7 @@ func (g *TreeGrid) CountVisibleTrees() int {
 		visibleMap[coordRight] = 1
 	}
 
-	colMax := makeSliceInit(len(g.Visibility[0]), -1)
+	colMax := shared.MakeSliceInit(len(g.Visibility[0]), -1)
 
 	for i := 0; i < len(g.Visibility); i++ {
 		rowMax := g.Visibility[i][0]
@@ -58,7 +62,7 @@ func (g *TreeGrid) CountVisibleTrees() int {
 		}
 	}
 
-	colMax = makeSliceInit(len(g.Visibility[0]), -1)
+	colMax = shared.MakeSliceInit(len(g.Visibility[0]), -1)
 
 	for i := len(g.Visibility) - 1; i >= 0; i-- {
 		rowMax := g.Visibility[i][len(g.Visibility[i])-1]
@@ -82,10 +86,45 @@ func (g *TreeGrid) CountVisibleTrees() int {
 	return len(visibleMap)
 }
 
-func makeSliceInit(len int, defaultValue int) (res []int) {
-	res = make([]int, len)
-	for i := 0; i < len; i++ {
-		res[i] = defaultValue
+func (tg *TreeGrid) GetVisibilityScores() (res *[]int) {
+	res = &[]int{}
+	for row := 0; row < len(tg.Visibility)-1; row++ {
+		for col := 0; col < len(tg.Visibility[0])-1; col++ {
+			currentHeight := tg.Visibility[row][col]
+			visibility := [4]int{}
+			if row == 0 || col == 0 {
+				continue
+			}
+			// look up
+			for i := 1; i <= row; i++ {
+				visibility[0] = i
+				if tg.Visibility[row-i][col] >= currentHeight {
+					break
+				}
+			}
+			// look down
+			for i := 1; i <= len(tg.Visibility)-1-row; i++ {
+				visibility[1] = i
+				if tg.Visibility[row+i][col] >= currentHeight {
+					break
+				}
+			}
+			// look left
+			for i := 1; i <= col; i++ {
+				visibility[2] = i
+				if tg.Visibility[row][col-i] >= currentHeight {
+					break
+				}
+			}
+			// look right
+			for i := 1; i <= len(tg.Visibility[row])-1-col; i++ {
+				visibility[3] = i
+				if tg.Visibility[row][col+i] >= currentHeight {
+					break
+				}
+			}
+			*res = append(*res, shared.Multiply(visibility[:]))
+		}
 	}
 	return res
 }
