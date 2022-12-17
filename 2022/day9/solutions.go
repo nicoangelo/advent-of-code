@@ -20,5 +20,12 @@ func part1(lines []string) int {
 }
 
 func part2(lines []string) int {
-	return 0
+	dirs := linesToDirections(lines)
+	r := NewRope(9)
+	for _, d := range *dirs {
+		r.MoveHead(&d)
+		// r.PrintKnotPositions()
+	}
+	// r.PrintKnotHistoryPositions(8)
+	return len(*r.KnotPositionsHistory[8])
 }

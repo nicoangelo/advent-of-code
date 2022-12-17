@@ -13,6 +13,17 @@ var testData = []string{
 	"R 2",
 }
 
+var testDataLarge = []string{
+	"R 5",
+	"U 8",
+	"L 8",
+	"D 3",
+	"R 17",
+	"D 10",
+	"L 25",
+	"U 20",
+}
+
 func TestPart1(t *testing.T) {
 	res := part1(testData)
 	want := 13
@@ -23,6 +34,14 @@ func TestPart1(t *testing.T) {
 
 func TestPart2(t *testing.T) {
 	res := part2(testData)
+	want := 1 // never moved, stayed at 0,0
+	if res != want {
+		t.Fatalf("got: %d, want: %d", res, want)
+	}
+}
+
+func TestPart2Large(t *testing.T) {
+	res := part2(testDataLarge)
 	want := 36
 	if res != want {
 		t.Fatalf("got: %d, want: %d", res, want)
