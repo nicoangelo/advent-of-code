@@ -12,11 +12,11 @@ func linesToDirections(lines []string) *[]Instruction {
 
 func part1(lines []string) int {
 	dirs := linesToDirections(lines)
-	r := &Rope{}
+	r := NewRope(1)
 	for _, d := range *dirs {
 		r.MoveHead(&d)
 	}
-	return len(*r.TailHistory)
+	return len(*r.KnotPositionsHistory[0])
 }
 
 func part2(lines []string) int {

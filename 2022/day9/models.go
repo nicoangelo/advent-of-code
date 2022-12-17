@@ -36,43 +36,50 @@ func runeToVector(r rune) [2]int {
 }
 
 type Rope struct {
-	HeadPosition [2]int
-	TailPosition [2]int
-	TailHistory  *map[[2]int]int
+	HeadPosition         [2]int
+	KnotPositions        [][2]int
+	KnotPositionsHistory []*map[[2]int]int
 }
 
-func (r *Rope) IsTailAdjacent() bool {
-	diff := shared.VectorDiff(r.HeadPosition, r.TailPosition)
+func NewRope(knots int) *Rope {
+	knotHistory := shared.MakeSliceInit(knots, &map[[2]int]int{{0, 0}: 1})
+	return &Rope{
+		KnotPositions:        make([][2]int, knots),
+		KnotPositionsHistory: knotHistory,
+	}
+}
+
+func (r *Rope) IsKnotAdjacent(knot int) bool {
+	diff := shared.VectorDiff(r.HeadPosition, r.KnotPositions[knot])
 	return shared.AbsInt(diff[0]) <= 1 && shared.AbsInt(diff[1]) <= 1
 }
 
-func (r *Rope) IsTailInSameRowOrCol() bool {
-	return r.HeadPosition[0] == r.TailPosition[0] ||
-		r.HeadPosition[1] == r.TailPosition[1]
+func (r *Rope) IsKnotInSameRowOrCol(knot int) bool {
+	return r.HeadPosition[0] == r.KnotPositions[knot][0] ||
+		r.HeadPosition[1] == r.KnotPositions[knot][1]
 }
 
 func (r *Rope) MoveHead(in *Instruction) {
 	for i := 0; i < in.Distance; i++ {
 		r.HeadPosition = shared.VectorAdd(r.HeadPosition, in.DirectionUnityVector)
-		isAdjacent := r.IsTailAdjacent()
-		if !isAdjacent && !r.IsTailInSameRowOrCol() {
-			diff_unity := shared.VectorUnity(shared.VectorDiff(r.HeadPosition, r.TailPosition))
-			r.MoveTail(diff_unity)
-		} else if !isAdjacent {
-			r.MoveTail(in.DirectionUnityVector)
+		for knot := 0; knot < len(r.KnotPositions); knot++ {
+			isAdjacent := r.IsKnotAdjacent(knot)
+			if !isAdjacent && !r.IsKnotInSameRowOrCol(knot) {
+				diff_unity := shared.VectorUnity(shared.VectorDiff(r.HeadPosition, r.KnotPositions[knot]))
+				r.MoveKnot(knot, diff_unity)
+			} else if !isAdjacent {
+				r.MoveKnot(knot, in.DirectionUnityVector)
+			}
 		}
 	}
 }
 
-func (r *Rope) MoveTail(dir [2]int) {
-	if r.TailHistory == nil {
-		r.TailHistory = &map[[2]int]int{{0, 0}: 1}
-	}
-	r.TailPosition = shared.VectorAdd(r.TailPosition, dir)
+func (r *Rope) MoveKnot(knot int, dir [2]int) {
+	r.KnotPositions[knot] = shared.VectorAdd(r.KnotPositions[knot], dir)
 
-	if _, ok := (*r.TailHistory)[r.TailPosition]; ok {
-		(*r.TailHistory)[r.TailPosition] += 1
+	if _, ok := (*r.KnotPositionsHistory[knot])[r.KnotPositions[knot]]; ok {
+		(*r.KnotPositionsHistory[knot])[r.KnotPositions[knot]] += 1
 	} else {
-		(*r.TailHistory)[r.TailPosition] = 1
+		(*r.KnotPositionsHistory[knot])[r.KnotPositions[knot]] = 1
 	}
 }
