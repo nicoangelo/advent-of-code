@@ -7,3 +7,13 @@ func MakeSliceInit[T comparable](len int, defaultValue T) (res []T) {
 	}
 	return res
 }
+
+func SliceConvert[TIn comparable, TOut comparable](slice []TIn, converter func(in TIn) (TOut, error)) (res []TOut) {
+	res = make([]TOut, len(slice))
+	for i, v := range slice {
+		if cv, err := converter(v); err == nil {
+			res[i] = cv
+		}
+	}
+	return res
+}
