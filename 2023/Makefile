@@ -14,7 +14,7 @@ new:
 	@cp -R template/ day$(day_dir)
 	@sed -i '' 's/dayX/day$(day_dir)/' day$(day_dir)/*
 	@sed -i '' 's/}/\tday$(day_dir).PrintSolutions()\n}/' main.go
-	@sed -i '' 's/^)/\t"github.com\/nicoangelo\/advent-of-code-2022\/day$(day_dir)"\n)/' main.go
+	@sed -i '' 's/^)/\t"github.com\/nicoangelo\/advent-of-code-2023\/day$(day_dir)"\n)/' main.go
 
 %:
 	@:
