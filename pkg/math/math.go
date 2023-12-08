@@ -1,4 +1,4 @@
-package shared
+package math
 
 // Sum adds up all values in the given array and returns the sum
 func Sum(values []int) (res int) {

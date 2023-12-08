@@ -4,7 +4,7 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/nicoangelo/advent-of-code-2022/shared"
+	"github.com/nicoangelo/aoc-pkg/math"
 )
 
 func part1(lines []string) (maxCaloriesSum int) {
@@ -41,5 +41,5 @@ func part2(lines []string) (maxCaloriesSum int) {
 
 	sort.Sort(sort.Reverse(sort.IntSlice(maxCaloriesSums)))
 
-	return shared.Sum(maxCaloriesSums[0:3])
+	return math.Sum(maxCaloriesSums[0:3])
 }

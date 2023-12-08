@@ -84,7 +84,7 @@ func (sw *ScreenWriter) OnTick(cycle int, registerX int) {
 	if sw.Lines == nil {
 		sw.Lines = make([]string, 0)
 	}
-	horizPos := (cycle % 40) - 1
+	horizPos := ((cycle - 1) % 40)
 	if horizPos >= registerX-1 && horizPos <= registerX+1 {
 		sw.LineBuffer += "#"
 	} else {

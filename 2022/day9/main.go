@@ -3,11 +3,11 @@ package day9
 import (
 	"log"
 
-	"github.com/nicoangelo/advent-of-code-2022/shared"
+	"github.com/nicoangelo/aoc-pkg/reader"
 )
 
 func PrintSolutions() {
-	lines := shared.ReadInputFile("./day9/input")
+	lines := reader.ReadInputFile("./day9/input")
 	part1 := part1(lines)
 	log.Println("Part 1: ", part1)
 

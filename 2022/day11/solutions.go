@@ -1,6 +1,8 @@
 package day11
 
-import "github.com/nicoangelo/advent-of-code-2022/shared"
+import (
+	"github.com/nicoangelo/aoc-pkg/math"
+)
 
 func part1(lines []string) int {
 	g := &KeepAwayGame{WorryLevelDivider: 3}
@@ -13,7 +15,7 @@ func part1(lines []string) int {
 	 * monkeys have the correct counts.
 	 */
 	// g.PrintMonkeyStats()
-	return shared.Multiply(g.GetMostActiveMonkeys(2))
+	return math.Multiply(g.GetMostActiveMonkeys(2))
 }
 
 func part2(lines []string) int {
@@ -29,5 +31,5 @@ func part2(lines []string) int {
 		// 	g.PrintMonkeyStats()
 		// }
 	}
-	return shared.Multiply(g.GetMostActiveMonkeys(2))
+	return math.Multiply(g.GetMostActiveMonkeys(2))
 }

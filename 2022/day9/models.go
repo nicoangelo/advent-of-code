@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nicoangelo/advent-of-code-2022/shared"
+	"github.com/nicoangelo/aoc-pkg/math"
 )
 
 type Instruction struct {
@@ -52,8 +52,8 @@ func NewRope(knots int) *Rope {
 }
 
 func (r *Rope) IsKnotAdjacentToPosition(knot int, tailPos [2]int) bool {
-	diff := shared.VectorDiff(tailPos, r.KnotPositions[knot])
-	return shared.AbsInt(diff[0]) <= 1 && shared.AbsInt(diff[1]) <= 1
+	diff := math.VectorDiff(tailPos, r.KnotPositions[knot])
+	return math.AbsInt(diff[0]) <= 1 && math.AbsInt(diff[1]) <= 1
 }
 
 func (r *Rope) IsKnotInSameRowOrColAsPosition(knot int, tailPos [2]int) bool {
@@ -63,14 +63,14 @@ func (r *Rope) IsKnotInSameRowOrColAsPosition(knot int, tailPos [2]int) bool {
 
 func (r *Rope) MoveHead(in *Instruction) {
 	for i := 0; i < in.Distance; i++ {
-		r.HeadPosition = shared.VectorAdd(r.HeadPosition, in.DirectionVector)
+		r.HeadPosition = math.VectorAdd(r.HeadPosition, in.DirectionVector)
 		currentHead := r.HeadPosition
 		for knot := 0; knot < len(r.KnotPositions); knot++ {
 			if r.IsKnotAdjacentToPosition(knot, currentHead) {
 				break
 			} else {
-				diffToCurrentHead := shared.VectorDiff(currentHead, r.KnotPositions[knot])
-				diff_unity := shared.VectorUnity(diffToCurrentHead)
+				diffToCurrentHead := math.VectorDiff(currentHead, r.KnotPositions[knot])
+				diff_unity := math.VectorUnity(diffToCurrentHead)
 				r.MoveKnot(knot, diff_unity)
 				currentHead = r.KnotPositions[knot]
 			}
@@ -80,7 +80,7 @@ func (r *Rope) MoveHead(in *Instruction) {
 }
 
 func (r *Rope) MoveKnot(knot int, dir [2]int) {
-	r.KnotPositions[knot] = shared.VectorAdd(r.KnotPositions[knot], dir)
+	r.KnotPositions[knot] = math.VectorAdd(r.KnotPositions[knot], dir)
 	pos := r.KnotPositions[knot]
 	r.ExtendBoundingBox(pos)
 

@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nicoangelo/advent-of-code-2022/shared"
+	"github.com/nicoangelo/aoc-pkg/slices"
 )
 
 type Monkey struct {
@@ -56,7 +56,7 @@ func (g *KeepAwayGame) MonkeysFromLines(lines []string) {
 			g.Monkeys[index] = currentMonkey
 		case strings.HasPrefix(l, PREFIX_ITEMS):
 			items := strings.TrimPrefix(l, PREFIX_ITEMS)
-			currentMonkey.Items = shared.SliceConvert(strings.Split(items, ", "), strconv.Atoi)
+			currentMonkey.Items = slices.SliceConvert(strings.Split(items, ", "), strconv.Atoi)
 		case strings.HasPrefix(l, PREFIX_OPERATION):
 			op_tokens := [2]string{}
 			_, err := fmt.Sscanf(strings.TrimPrefix(l, PREFIX_OPERATION), "%s %s", &op_tokens[0], &op_tokens[1])
