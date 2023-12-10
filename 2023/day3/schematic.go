@@ -1,69 +1,74 @@
 package day3
 
 import (
+	"slices"
+
 	"github.com/nicoangelo/aoc-pkg/math"
 )
 
 type Schematic struct {
 	Parts     []Part
-	PartsMask math.Matrix2D[bool]
+	PartsMask math.Matrix2D[*PartArea]
 }
 
-func (s *Schematic) PartsSum() (sum int) {
-	sum = 0
-	for _, p := range s.Parts {
-		sum += p.Number
-	}
-	return sum
-}
-
-func (s *Schematic) fromLines(lines []string) {
+func (s *Schematic) fromLines(lines []string, partsMaskChars []rune) {
 	s.Parts = make([]Part, 0)
-	s.readPartsMask(lines)
+	s.readPartsMask(lines, partsMaskChars)
+	s.readParts(lines)
+}
+
+func (s *Schematic) readParts(lines []string) {
 	numBuffer := 0
-	numBufferActive := false
+	var activePartArea *PartArea
 	for y, row := range lines {
 		numBuffer = 0
 		for x, col := range row {
 			if col >= '0' && col <= '9' {
 				numBuffer *= 10
 				numBuffer += int(col - '0')
-				if !numBufferActive {
-					numBufferActive = s.PartsMask.At(math.Coord2D{X: x, Y: y})
+				if activePartArea == nil {
+					activePartArea = s.PartsMask.At(math.Coord2D{X: x, Y: y})
 				}
 				continue
 			}
-			if numBuffer != 0 && numBufferActive {
-				s.addPartNumber(numBuffer)
+			if numBuffer != 0 && activePartArea != nil {
+				activePartArea.PartCount++
+				s.addPartNumber(numBuffer, activePartArea)
 			}
 			numBuffer = 0
-			numBufferActive = false
+			activePartArea = nil
 		}
-		if numBuffer != 0 && numBufferActive {
-			s.addPartNumber(numBuffer)
+		if numBuffer != 0 && activePartArea != nil {
+			activePartArea.PartCount++
+			s.addPartNumber(numBuffer, activePartArea)
 		}
 		numBuffer = 0
-		numBufferActive = false
+		activePartArea = nil
 	}
 }
 
-func (s *Schematic) readPartsMask(lines []string) {
+func (s *Schematic) readPartsMask(lines []string, includeChars []rune) {
 	s.PartsMask.Init(math.Coord2D{Y: len(lines), X: len(lines[0])})
 
 	for y, l := range lines {
 		for x, col := range l {
-			if col == '.' || (col >= '0' && col <= '9') {
+			if !slices.Contains(includeChars, col) {
 				continue
 			}
-			s.PartsMask.SetAndExpand(math.Coord2D{X: x, Y: y}, true, 1)
+			s.PartsMask.SetAndExpand(math.Coord2D{X: x, Y: y}, &PartArea{}, 1)
 		}
 	}
 }
 
-func (s *Schematic) addPartNumber(number int) {
-	s.Parts = append(s.Parts, Part{Number: number})
+func (s *Schematic) addPartNumber(number int, partArea *PartArea) {
+	s.Parts = append(s.Parts, Part{Number: number, PartArea: partArea})
 }
 
 type Part struct {
-	Number int
+	Number   int
+	PartArea *PartArea
+}
+
+type PartArea struct {
+	PartCount int
 }
