@@ -63,7 +63,7 @@ func (t *MapTable) processSeed(s *Seed) {
 		if translatedStart != -1 {
 			s.Start = translatedStart
 		} else {
-			slog.Info("Must split seed at start", "at", c.SourceEnd)
+			slog.Info("Must split seed at start of conversion range", "at", c.SourceStart)
 			splitSeed := s.SplitAtStart(c.SourceStart)
 			t.processSeed(&splitSeed)
 			s.Start = c.TranslateNumber(s.Start)
@@ -72,7 +72,7 @@ func (t *MapTable) processSeed(s *Seed) {
 		if translatedEnd != -1 {
 			s.End = translatedEnd // does not update
 		} else {
-			slog.Info("Must split seed at end", "at", c.SourceEnd)
+			slog.Info("Must split seed at end of conversion range", "at", c.SourceEnd)
 			splitSeed := s.SplitAtEnd(c.SourceEnd)
 			t.processSeed(&splitSeed)
 			s.End = c.TranslateNumber(s.End)
