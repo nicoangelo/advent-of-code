@@ -17,3 +17,13 @@ func SliceConvert[TIn comparable, TOut comparable](slice []TIn, converter func(i
 	}
 	return res
 }
+
+func SliceAppendRange(s []int, start int, count int) []int {
+	if s == nil {
+		panic("Cannot append to nil slice")
+	}
+	for i := 0; i < count; i++ {
+		s = append(s, start+i)
+	}
+	return s
+}
