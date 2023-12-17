@@ -4,6 +4,8 @@ import (
 	"log/slog"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var testData = []string{
@@ -22,16 +24,12 @@ func TestMain(m *testing.M) {
 
 func TestPart1(t *testing.T) {
 	res := part1(testData)
-	want := 15
-	if res != want {
-		t.Fatalf("got: %d, want: %d", res, want)
-	}
+	want := 0
+	assert.Equal(t, want, res)
 }
 
 func TestPart2(t *testing.T) {
 	res := part2(testData)
-	want := 12
-	if res != want {
-		t.Fatalf("got: %d, want: %d", res, want)
-	}
+	want := 0
+	assert.Equal(t, want, res)
 }
