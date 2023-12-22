@@ -19,6 +19,15 @@ func PrintSolutions() {
 
 func part1(lines []string) int {
 	valuator := new(camelcards.ClassicHandValuator)
+	return runWithValuator(lines, valuator)
+}
+
+func part2(lines []string) int {
+	valuator := &camelcards.JokerHandValuator{JokerCard: 'J'}
+	return runWithValuator(lines, valuator)
+}
+
+func runWithValuator(lines []string, valuator camelcards.HandValuator) int {
 	hands := make([]camelcards.Hand, len(lines))
 	for i, l := range lines {
 		hands[i].FromLine(l, valuator)
@@ -29,8 +38,4 @@ func part1(lines []string) int {
 		sum += (i + 1) * h.GetBid()
 	}
 	return sum
-}
-
-func part2(lines []string) int {
-	return 0
 }
