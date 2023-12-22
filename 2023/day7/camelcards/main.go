@@ -6,22 +6,6 @@ import (
 
 type Card rune
 
-var cardValues = map[Card]int{
-	'A': 14,
-	'K': 13,
-	'Q': 12,
-	'J': 11,
-	'T': 10,
-	'9': 9,
-	'8': 8,
-	'7': 7,
-	'6': 6,
-	'5': 5,
-	'4': 4,
-	'3': 3,
-	'2': 2,
-}
-
 const (
 	CardCount    = 5
 	HighCard     = 1
@@ -34,11 +18,11 @@ const (
 )
 
 type Hand struct {
-	cardMap    map[Card]int
-	cards      [CardCount]Card
-	cardValues [CardCount]int
-	bid        int
-	handType   int
+	cardTypeCounts map[Card]int
+	cards          [CardCount]Card
+	cardValues     [CardCount]int
+	bid            int
+	handType       int
 }
 
 func (h Hand) String() string {
@@ -49,21 +33,21 @@ func (h *Hand) GetBid() int {
 	return h.bid
 }
 
-func (h *Hand) FromLine(l string) {
-	h.cardMap = make(map[Card]int)
+func (h *Hand) FromLine(l string, vl HandValuator) {
+	h.cardTypeCounts = make(map[Card]int)
 	for i, r := range l {
 		if i < CardCount {
 			c := Card(r)
-			h.cardMap[c]++
+			h.cardTypeCounts[c]++
 			h.cards[i] = c
-			h.cardValues[i] = cardValues[c]
+			h.cardValues[i] = vl.getCardValue(c)
 		}
 		if i > CardCount {
 			h.bid *= 10
 			h.bid += int(r - '0')
 		}
 	}
-	h.handType = h.getHandType()
+	h.handType = vl.getHandValue(h.cardTypeCounts)
 }
 
 func (h1 *Hand) Compare(h2 *Hand) int {
@@ -86,34 +70,6 @@ func (h1 *Hand) compareCards(h2 *Hand) int {
 		}
 	}
 	return 0
-}
-
-func (h *Hand) getHandType() int {
-	highestCount := 0
-	for _, v := range h.cardMap {
-		if v > highestCount {
-			highestCount = v
-		}
-	}
-	if len(h.cardMap) == 1 {
-		return FiveOfAKind
-	} else if len(h.cardMap) == 2 && highestCount == 4 {
-		// Four of a kind: 4+1
-		return FourOfAKind
-	} else if len(h.cardMap) == 2 {
-		// Full House: 3+2
-		return FullHouse
-	} else if len(h.cardMap) == 3 && highestCount == 3 {
-		// Three of a kind: 3+1+1
-		return ThreeOfAKind
-	} else if len(h.cardMap) == 3 {
-		// Two pair: 2+2+1
-		return TwoPair
-	} else if len(h.cardMap) == 4 {
-		// One pair: 2+1+1+1
-		return OnePair
-	}
-	return HighCard
 }
 
 func getHandName(handType int) string {

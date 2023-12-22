@@ -18,14 +18,14 @@ func PrintSolutions() {
 }
 
 func part1(lines []string) int {
+	valuator := new(camelcards.ClassicHandValuator)
 	hands := make([]camelcards.Hand, len(lines))
 	for i, l := range lines {
-		hands[i].FromLine(l)
+		hands[i].FromLine(l, valuator)
 	}
 	sort.Slice(hands, func(i, j int) bool { return hands[i].Compare(&hands[j]) < 0 })
 	sum := 0
 	for i, h := range hands {
-		// fmt.Println(h)
 		sum += (i + 1) * h.GetBid()
 	}
 	return sum
