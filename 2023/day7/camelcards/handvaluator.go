@@ -113,5 +113,8 @@ func (hv *JokerHandValuator) getHandValue(cv map[Card]int) int {
 		}
 		return OnePair
 	}
+	if cv[hv.JokerCard] == 1 {
+		return OnePair
+	}
 	return HighCard
 }
