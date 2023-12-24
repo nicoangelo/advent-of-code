@@ -19,10 +19,39 @@ func PrintSolutions() {
 func part1(lines []string) int {
 	m := &nav.Map{}
 	m.FromLines(lines)
+	ctx := m.NewNavigationContext("AAA", func(n *nav.Node) bool { return n.Name == "ZZZ" })
 
-	return m.Navigate("AAA", "ZZZ")
+	return ctx.Navigate()
 }
 
 func part2(lines []string) int {
-	return 0
+	m := &nav.Map{}
+	m.FromLines(lines)
+	ctxs := []*nav.NavigationContext{}
+	for _, v := range m.GetNodeKeys() {
+		if v[len(v)-1:] != "A" {
+			continue
+		}
+		c := m.NewNavigationContext(v, nil)
+		c.StartNavigation()
+		ctxs = append(ctxs, c)
+	}
+
+	for {
+		for i := range ctxs {
+			ctxs[i].NavigateStep()
+		}
+		finished := 0
+		for _, c := range ctxs {
+			nn := c.GetCurrentNode().Name
+			if nn[len(nn)-1:] == "Z" {
+				finished++
+			}
+		}
+		if finished == len(ctxs) {
+			break
+		}
+	}
+
+	return ctxs[0].GetCurrentStepCount()
 }

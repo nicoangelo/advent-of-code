@@ -2,13 +2,14 @@ package nav
 
 import "fmt"
 
+type Node struct {
+	Name string
+	next [2]string
+}
+
 type Map struct {
 	directions []int // 0 = left; 1 = right
 	nodes      map[string]Node
-}
-
-type Node struct {
-	next [2]string
 }
 
 func (m *Map) FromLines(lines []string) {
@@ -18,7 +19,9 @@ func (m *Map) FromLines(lines []string) {
 			m.directionsFromLine(l)
 		}
 		if i >= 2 {
-			m.nodes[l[0:3]] = Node{next: [2]string{l[7:10], l[12:15]}}
+			m.nodes[l[0:3]] = Node{
+				Name: l[0:3],
+				next: [2]string{l[7:10], l[12:15]}}
 		}
 	}
 }
@@ -32,29 +35,66 @@ func (m *Map) directionsFromLine(l string) {
 	}
 }
 
-func (m *Map) Navigate(from string, to string) int {
+func (m *Map) GetNodeKeys() []string {
+	keys := make([]string, 0, len(m.nodes))
+	for k := range m.nodes {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
+func (m *Map) NewNavigationContext(from string, endCondition func(*Node) bool) *NavigationContext {
 	startNode, ok := m.nodes[from]
 	if !ok {
 		panic("Start node does not exist")
 	}
-	endNode, ok := m.nodes[to]
-	if !ok {
-		panic("End node does not exist")
+	return &NavigationContext{
+		startNode:    &startNode,
+		endCondition: endCondition,
+		maap:         m,
 	}
+}
 
-	nextNode := startNode
-	stepCount := 0
+type NavigationContext struct {
+	stepCount    int
+	startNode    *Node
+	endCondition func(*Node) bool
+	maap         *Map
+	currentNode  *Node
+}
+
+func (ctx *NavigationContext) Navigate() int {
+	ctx.StartNavigation()
 	for {
-		nextNodeKey := nextNode.next[m.directions[stepCount%len(m.directions)]]
-		nextNode = m.nodes[nextNodeKey]
-		stepCount++
-		if nextNode == endNode {
+		ctx.NavigateStep()
+		if ctx.endCondition(ctx.currentNode) {
 			break
 		}
-		if stepCount >= 1000000 {
+		if ctx.stepCount >= 1000000 {
 			fmt.Println("Stopped navigating after 1M attempts to find the end node")
 			break
 		}
 	}
-	return stepCount
+	return ctx.stepCount
+}
+
+func (ctx *NavigationContext) StartNavigation() {
+	ctx.currentNode = ctx.startNode
+	ctx.stepCount = 0
+}
+
+func (ctx *NavigationContext) NavigateStep() *Node {
+	nextNodeKey := ctx.currentNode.next[ctx.maap.directions[ctx.stepCount%len(ctx.maap.directions)]]
+	nn := ctx.maap.nodes[nextNodeKey]
+	ctx.currentNode = &nn
+	ctx.stepCount++
+	return ctx.currentNode
+}
+
+func (ctx *NavigationContext) GetCurrentNode() *Node {
+	return ctx.currentNode
+}
+
+func (ctx *NavigationContext) GetCurrentStepCount() int {
+	return ctx.stepCount
 }
