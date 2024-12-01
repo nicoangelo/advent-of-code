@@ -46,5 +46,31 @@ func part1(lines []string) int {
 }
 
 func part2(lines []string) int {
-	return 0
+
+	a := map[int]int{}
+	b := map[int]int{}
+
+	for _, line := range lines {
+		l := slices.SliceConvert(strings.Split(line, "   "), strconv.Atoi)
+
+		if v, ok := a[l[0]]; ok {
+			a[l[0]] = v + 1
+		} else {
+			a[l[0]] = 1
+		}
+
+		if w, ok := b[l[1]]; ok {
+			b[l[1]] = w + 1
+		} else {
+			b[l[1]] = 1
+		}
+	}
+
+	s := 0
+
+	for k, v := range a {
+		s = s + k*v*b[k]
+	}
+
+	return s
 }
