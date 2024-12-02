@@ -10,11 +10,11 @@ import (
 
 var testData = []string{
 	"7 6 4 2 1",
-    "1 2 7 8 9",
-    "9 7 6 2 1",
-    "1 3 2 4 5",
-    "8 6 4 4 1",
-    "1 3 6 7 9",
+	"1 2 7 8 9",
+	"9 7 6 2 1",
+	"1 3 2 4 5",
+	"8 6 4 4 1",
+	"1 3 6 7 9",
 }
 
 func TestMain(m *testing.M) {
@@ -33,6 +33,6 @@ func TestPart1(t *testing.T) {
 
 func TestPart2(t *testing.T) {
 	res := part2(testData)
-	want := 0
+	want := 4
 	assert.Equal(t, want, res)
 }
