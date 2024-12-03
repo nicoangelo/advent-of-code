@@ -71,8 +71,8 @@ func part2(lines []string) int {
 }
 
 func delete_at_index(slice []int, index int) []int {
-    slice_new := make([]int, len(slice))
-    copy(slice_new, slice)
+	slice_new := make([]int, len(slice))
+	copy(slice_new, slice)
 	return append(slice_new[:index], slice_new[index+1:]...)
 }
 
@@ -97,19 +97,19 @@ func is_safe(l []int, t int) bool {
 	for i < len(l) {
 		if (pos*(l[i]-l[i-1]) < 1) || (pos*(l[i]-l[i-1]) > 3) {
 
-//             for j, _ := range l {
-//                if is_safe(delete_at_index(l,j),t+1) {
-//                     return true
-//                }
-//             }
-//
-//             return false
+			//             for j, _ := range l {
+			//                if is_safe(delete_at_index(l,j),t+1) {
+			//                     return true
+			//                }
+			//             }
+			//
+			//             return false
 
-            safe1 := is_safe(delete_at_index(l, i), t+1)
+			safe1 := is_safe(delete_at_index(l, i), t+1)
 			safe2 := is_safe(delete_at_index(l, i-1), t+1)
 
-// 			firstSave := is_safe(delete_at_index(l, 0), t+1)
-// 			lastSave := is_safe(delete_at_index(l, len(l)-1), t+1)
+			// 			firstSave := is_safe(delete_at_index(l, 0), t+1)
+			// 			lastSave := is_safe(delete_at_index(l, len(l)-1), t+1)
 
 			if safe1 || safe2 {
 				return true
