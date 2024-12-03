@@ -27,3 +27,9 @@ func SliceAppendRange(s []int, start int, count int) []int {
 	}
 	return s
 }
+
+func RemoveAtIndex(slice []int, index int) []int {
+	slice_new := make([]int, len(slice))
+	copy(slice_new, slice)
+	return append(slice_new[:index], slice_new[index+1:]...)
+}
