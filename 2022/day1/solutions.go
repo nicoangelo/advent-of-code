@@ -4,7 +4,7 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/nicoangelo/aoc-pkg/math"
+	"github.com/nicoangelo/aoc-pkg/slicemath"
 )
 
 func part1(lines []string) (maxCaloriesSum int) {
@@ -41,5 +41,5 @@ func part2(lines []string) (maxCaloriesSum int) {
 
 	sort.Sort(sort.Reverse(sort.IntSlice(maxCaloriesSums)))
 
-	return math.Sum(maxCaloriesSums[0:3])
+	return slicemath.Sum(maxCaloriesSums[0:3])
 }

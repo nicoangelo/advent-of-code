@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nicoangelo/aoc-pkg/math"
+	"github.com/nicoangelo/aoc-pkg/intmath"
 	"github.com/nicoangelo/aoc-pkg/reader"
-	"github.com/nicoangelo/aoc-pkg/slices"
+	"github.com/nicoangelo/aoc-pkg/sliceutils"
 )
 
 func PrintSolutions() {
@@ -28,7 +28,7 @@ func part1(lines []string) int {
 	var b = make([]int, len)
 
 	for i, line := range lines {
-		l := slices.SliceConvert(strings.Split(line, "   "), strconv.Atoi)
+		l := sliceutils.SliceConvert(strings.Split(line, "   "), strconv.Atoi)
 		a[i] = l[0]
 		b[i] = l[1]
 	}
@@ -39,7 +39,7 @@ func part1(lines []string) int {
 	d := 0
 
 	for i := 0; i < len; i++ {
-		d += math.AbsInt(a[i] - b[i])
+		d += intmath.Abs(a[i] - b[i])
 	}
 
 	return d
@@ -51,7 +51,7 @@ func part2(lines []string) int {
 	b := map[int]int{}
 
 	for _, line := range lines {
-		l := slices.SliceConvert(strings.Split(line, "   "), strconv.Atoi)
+		l := sliceutils.SliceConvert(strings.Split(line, "   "), strconv.Atoi)
 
 		if v, ok := a[l[0]]; ok {
 			a[l[0]] = v + 1

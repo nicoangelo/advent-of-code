@@ -1,4 +1,4 @@
-package math
+package slicemath
 
 type Matrix2D[T comparable] struct {
 	values map[Coord2D]T

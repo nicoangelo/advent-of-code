@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/nicoangelo/aoc-pkg/reader"
-	"github.com/nicoangelo/aoc-pkg/slices"
+	"github.com/nicoangelo/aoc-pkg/sliceutils"
 )
 
 func PrintSolutions() {
@@ -24,7 +24,7 @@ func part1(lines []string) int {
 
 	for _, line := range lines {
 
-		l := slices.SliceConvert(strings.Split(line, " "), strconv.Atoi)
+		l := sliceutils.SliceConvert(strings.Split(line, " "), strconv.Atoi)
 
 		pos := (l[1]-l[0] > 0)
 
@@ -59,7 +59,7 @@ func part2(lines []string) int {
 
 	for _, line := range lines {
 
-		l := slices.SliceConvert(strings.Split(line, " "), strconv.Atoi)
+		l := sliceutils.SliceConvert(strings.Split(line, " "), strconv.Atoi)
 
 		if is_safe(l, 0) {
 			safe += 1

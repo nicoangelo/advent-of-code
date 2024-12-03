@@ -1,4 +1,4 @@
-package slices
+package sliceutils
 
 func MakeSliceInit[T comparable](len int, defaultValue T) (res []T) {
 	res = make([]T, len)

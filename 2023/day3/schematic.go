@@ -3,12 +3,12 @@ package day3
 import (
 	"slices"
 
-	"github.com/nicoangelo/aoc-pkg/math"
+	"github.com/nicoangelo/aoc-pkg/slicemath"
 )
 
 type Schematic struct {
 	Parts     []Part
-	PartsMask math.Matrix2D[*PartArea]
+	PartsMask slicemath.Matrix2D[*PartArea]
 }
 
 func (s *Schematic) fromLines(lines []string, partsMaskChars []rune) {
@@ -27,7 +27,7 @@ func (s *Schematic) readParts(lines []string) {
 				numBuffer *= 10
 				numBuffer += int(col - '0')
 				if activePartArea == nil {
-					activePartArea = s.PartsMask.At(math.Coord2D{X: x, Y: y})
+					activePartArea = s.PartsMask.At(slicemath.Coord2D{X: x, Y: y})
 				}
 				continue
 			}
@@ -48,14 +48,14 @@ func (s *Schematic) readParts(lines []string) {
 }
 
 func (s *Schematic) readPartsMask(lines []string, includeChars []rune) {
-	s.PartsMask.Init(math.Coord2D{Y: len(lines), X: len(lines[0])})
+	s.PartsMask.Init(slicemath.Coord2D{Y: len(lines), X: len(lines[0])})
 
 	for y, l := range lines {
 		for x, col := range l {
 			if !slices.Contains(includeChars, col) {
 				continue
 			}
-			s.PartsMask.SetAndExpand(math.Coord2D{X: x, Y: y}, &PartArea{}, 1)
+			s.PartsMask.SetAndExpand(slicemath.Coord2D{X: x, Y: y}, &PartArea{}, 1)
 		}
 	}
 }

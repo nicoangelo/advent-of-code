@@ -1,7 +1,7 @@
 package day11
 
 import (
-	"github.com/nicoangelo/aoc-pkg/math"
+	"github.com/nicoangelo/aoc-pkg/slicemath"
 )
 
 func part1(lines []string) int {
@@ -15,7 +15,7 @@ func part1(lines []string) int {
 	 * monkeys have the correct counts.
 	 */
 	// g.PrintMonkeyStats()
-	return math.Multiply(g.GetMostActiveMonkeys(2))
+	return slicemath.Multiply(g.GetMostActiveMonkeys(2))
 }
 
 func part2(lines []string) int {
@@ -31,5 +31,5 @@ func part2(lines []string) int {
 		// 	g.PrintMonkeyStats()
 		// }
 	}
-	return math.Multiply(g.GetMostActiveMonkeys(2))
+	return slicemath.Multiply(g.GetMostActiveMonkeys(2))
 }

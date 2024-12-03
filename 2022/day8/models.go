@@ -1,8 +1,8 @@
 package day8
 
 import (
-	"github.com/nicoangelo/aoc-pkg/math"
-	"github.com/nicoangelo/aoc-pkg/slices"
+	"github.com/nicoangelo/aoc-pkg/slicemath"
+	"github.com/nicoangelo/aoc-pkg/sliceutils"
 )
 
 const ASCII_CODE_ZERO = 48
@@ -41,7 +41,7 @@ func (g *TreeGrid) CountVisibleTrees() int {
 		visibleMap[coordRight] = 1
 	}
 
-	colMax := slices.MakeSliceInit(len(g.Visibility[0]), -1)
+	colMax := sliceutils.MakeSliceInit(len(g.Visibility[0]), -1)
 
 	for i := 0; i < len(g.Visibility); i++ {
 		rowMax := g.Visibility[i][0]
@@ -63,7 +63,7 @@ func (g *TreeGrid) CountVisibleTrees() int {
 		}
 	}
 
-	colMax = slices.MakeSliceInit(len(g.Visibility[0]), -1)
+	colMax = sliceutils.MakeSliceInit(len(g.Visibility[0]), -1)
 
 	for i := len(g.Visibility) - 1; i >= 0; i-- {
 		rowMax := g.Visibility[i][len(g.Visibility[i])-1]
@@ -124,7 +124,7 @@ func (tg *TreeGrid) GetVisibilityScores() (res *[]int) {
 					break
 				}
 			}
-			*res = append(*res, math.Multiply(visibility[:]))
+			*res = append(*res, slicemath.Multiply(visibility[:]))
 		}
 	}
 	return res
