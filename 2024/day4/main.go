@@ -1,7 +1,6 @@
 package day4
 
 import (
-	"fmt"
 	"log"
 	"regexp"
 
@@ -68,72 +67,50 @@ func part1(lines []string) int {
 
 func part2(lines []string) int {
 
-	height := len(lines)
+	mas := [3]byte{'M', 'A', 'S'}
+	sam := [3]byte{'S', 'A', 'M'}
+
+	count := 0
+
 	width := len(lines[0])
 
-	fo, _ := regexp.Compile(`MAS`)
-	re, _ := regexp.Compile(`SAM`)
+	for r := 0; r < (len(lines) - 2); r++ {
 
-	diags1 := make([]string, width+height-1)
-	diags2 := make([]string, width+height-1)
-
-	// var diag1 []string
-	// var diag2 []string
-
-	for r, row := range lines {
-
-		for c := 0; c < width; c++ {
-			diags1[r+c] = diags1[r+c] + string(row[c])
-			diags2[r+(width-c-1)] = diags2[r+(width-c-1)] + string(row[c])
-
-		}
-
-	}
-
-	bws := make([][]int, 0)
-
-	for d, diag1 := range diags1 {
-
-		diag1f := fo.FindAllStringIndex(diag1, -1)
-		diag1r := re.FindAllStringIndex(diag1, -1)
-
-		for _, v := range append(diag1f, diag1r...) {
-
-			i := v[0]
-			if d < width {
-				line := []int{i, d - i}
-				bws = append(bws, line)
-			} else {
-				line := []int{i + d - width, d - i}
-				bws = append(bws, line)
+		for c := 0; c < (width - 2); c++ {
+			fw := getFW(lines, r, c)
+			if fw == mas || fw == sam {
+				bw := getBW(lines, r, c+2)
+				if bw == mas || bw == sam {
+					count += 1
+				}
 			}
-
 		}
+
 	}
 
-	fws := make([][]int, 0)
+	return count
+}
 
-	for d, diag2 := range diags2 {
+func getFW(lines []string, r int, c int) [3]byte {
 
-		diag2f := fo.FindAllStringIndex(diag2, -1)
-		diag2r := re.FindAllStringIndex(diag2, -1)
+	var fw [3]byte
 
-		for _, v := range append(diag2f, diag2r...) {
-
-			i := v[0]
-			if d < width {
-				line := []int{i, width - (d - i) - 1}
-				fws = append(fws, line)
-			} else {
-				line := []int{i + d - width, width - (d - i) - 1}
-				fws = append(fws, line)
-			}
-
-		}
+	for i := 0; i < 3; i++ {
+		fw[i] = lines[r+i][c+i]
 	}
 
-	fmt.Print(bws)
-	fmt.Print(fws)
+	return (fw)
 
-	return 0
+}
+
+func getBW(lines []string, r int, c int) [3]byte {
+
+	var fw [3]byte
+
+	for i := 0; i < 3; i++ {
+		fw[i] = lines[r+i][c-i]
+	}
+
+	return (fw)
+
 }
