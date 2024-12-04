@@ -77,9 +77,9 @@ func part2(lines []string) int {
 	for r := 0; r < (len(lines) - 2); r++ {
 
 		for c := 0; c < (width - 2); c++ {
-			fw := getFW(lines, r, c)
+			fw := getFwDiag(lines, r, c)
 			if fw == mas || fw == sam {
-				bw := getBW(lines, r, c+2)
+				bw := getBwDiag(lines, r, c+2)
 				if bw == mas || bw == sam {
 					count += 1
 				}
@@ -91,7 +91,7 @@ func part2(lines []string) int {
 	return count
 }
 
-func getFW(lines []string, r int, c int) [3]byte {
+func getFwDiag(lines []string, r int, c int) [3]byte {
 
 	var fw [3]byte
 
@@ -103,7 +103,7 @@ func getFW(lines []string, r int, c int) [3]byte {
 
 }
 
-func getBW(lines []string, r int, c int) [3]byte {
+func getBwDiag(lines []string, r int, c int) [3]byte {
 
 	var fw [3]byte
 
