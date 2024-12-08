@@ -67,8 +67,40 @@ func getMiddleItemIfCorrectlyOrdered(orderingRules map[int][]int, pages []int) i
 	return pages[len(pages)/2]
 }
 
-func part2(lines []string) int {
-	// preceedingPages, pageUpdates := readInstructions(lines)
-	// return getCorrectlyOrderedMiddleItemSum(preceedingPages, pageUpdates)
+func part2(lines []string) (res int) {
+	orderingRules, pageUpdates := readInstructions(lines)
+	for _, u := range pageUpdates {
+		res += getMiddleItemAfterReordering(orderingRules, u)
+	}
+	return res
+}
+
+func getMiddleItemAfterReordering(orderingRules map[int][]int, pages []int) int {
+	reordered := false
+	for i, p := range pages {
+		mustBefore := orderingRules[p]
+
+		for j, la := range pages[i+1:] {
+			pos := i + j
+			if slices.Contains(mustBefore, la) {
+				reordered = true
+				swapped := []int{la, p}
+				if pos == 0 {
+					pages = append(swapped, pages[pos+2:]...)
+				} else if pos == len(pages)-2 {
+					pages = append(pages[:pos], swapped...)
+				} else {
+					before := pages[:pos]
+					after := pages[pos+2:]
+					pages = append(before, swapped...)
+					pages = append(pages, after...)
+				}
+			}
+		}
+	}
+	if reordered {
+		// we assume that there is an odd number of elements so there actually is a middle item
+		return pages[len(pages)/2]
+	}
 	return 0
 }
