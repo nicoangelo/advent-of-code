@@ -49,7 +49,35 @@ func (m *Matrix2D[T]) SetAndExpand(c Coord2D, v T, expandBy int) {
 	}
 }
 
+func (m *Matrix2D[T]) FindFirst(find T) (Coord2D, bool) {
+	for k, v := range m.values {
+		if v == find {
+			return k, true
+		}
+	}
+	return Coord2D{}, false
+}
+
+func (m *Matrix2D[T]) IsOutOfBounds(c Coord2D) bool {
+	return c.X < 0 || c.Y < 0 || c.X > m.size.X-1 || c.Y > m.size.Y-1
+}
+
+func (m *Matrix2D[T]) MaxX() int {
+	return m.size.X - 1
+}
+
+func (m *Matrix2D[T]) MaxY() int {
+	return m.size.Y - 1
+}
+
 type Coord2D struct {
 	X int
 	Y int
+}
+
+func (c *Coord2D) Add(add Coord2D) Coord2D {
+	return Coord2D{
+		X: c.X + add.X,
+		Y: c.Y + add.Y,
+	}
 }
