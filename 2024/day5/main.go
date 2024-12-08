@@ -77,23 +77,24 @@ func part2(lines []string) (res int) {
 
 func getMiddleItemAfterReordering(orderingRules map[int][]int, pages []int) int {
 	reordered := false
-	for i, p := range pages {
-		mustBefore := orderingRules[p]
-
-		for j, la := range pages[i+1:] {
-			pos := i + j
-			if slices.Contains(mustBefore, la) {
+	for i := 0; i < len(pages); i++ {
+		p := pages[i]
+		for j := i + 1; j < len(pages); j++ {
+			next := pages[j]
+			pos := j
+			if slices.Contains(orderingRules[p], next) {
 				reordered = true
-				swapped := []int{la, p}
-				if pos == 0 {
-					pages = append(swapped, pages[pos+2:]...)
-				} else if pos == len(pages)-2 {
-					pages = append(pages[:pos], swapped...)
+				swapped := []int{next, p}
+				if pos == 1 {
+					pages = append(swapped, pages[pos+1:]...)
+				} else if pos == len(pages)-1 {
+					pages = append(pages[:pos-1], swapped...)
 				} else {
-					before := pages[:pos]
-					after := pages[pos+2:]
+					before := pages[:pos-1]
+					after := pages[pos+1:]
 					pages = append(before, swapped...)
 					pages = append(pages, after...)
+					fmt.Println(pages)
 				}
 			}
 		}
