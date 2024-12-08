@@ -76,32 +76,25 @@ func part2(lines []string) (res int) {
 }
 
 func getMiddleItemAfterReordering(orderingRules map[int][]int, pages []int) int {
-	reordered := false
-	for i := 0; i < len(pages); i++ {
-		p := pages[i]
-		for j := i + 1; j < len(pages); j++ {
-			next := pages[j]
-			pos := j
-			if slices.Contains(orderingRules[p], next) {
-				reordered = true
-				swapped := []int{next, p}
-				if pos == 1 {
-					pages = append(swapped, pages[pos+1:]...)
-				} else if pos == len(pages)-1 {
-					pages = append(pages[:pos-1], swapped...)
-				} else {
-					before := pages[:pos-1]
-					after := pages[pos+1:]
-					pages = append(before, swapped...)
-					pages = append(pages, after...)
-					fmt.Println(pages)
-				}
-			}
-		}
-	}
+	reordered := sortPages(orderingRules, pages)
 	if reordered {
 		// we assume that there is an odd number of elements so there actually is a middle item
 		return pages[len(pages)/2]
 	}
 	return 0
+}
+
+func sortPages(orderingRules map[int][]int, pages []int) bool {
+	wasSorted := false
+	slices.SortFunc(pages, func(a int, b int) int {
+		if a == b {
+			return 0
+		}
+		if slices.Contains(orderingRules[b], a) {
+			wasSorted = true
+			return -1
+		}
+		return 1
+	})
+	return wasSorted
 }
