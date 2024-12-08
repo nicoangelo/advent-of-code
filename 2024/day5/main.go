@@ -20,10 +20,18 @@ func PrintSolutions() {
 	log.Println("Part 2: ", part2)
 }
 
-func part1(lines []string) int {
+func part1(lines []string) (res int) {
+	orderingRules, pageUpdates := readInstructions(lines)
+	for _, u := range pageUpdates {
+		res += getMiddleItemIfCorrectlyOrdered(orderingRules, u)
+	}
+	return res
+}
+
+func readInstructions(lines []string) (preceedingPages map[int][]int, pageUpdates [][]int) {
+	preceedingPages = map[int][]int{}
+	pageUpdates = [][]int{}
 	state := 1
-	preceedingPages := map[int][]int{}
-	pageUpdates := [][]int{}
 	for _, l := range lines {
 		if l == "" {
 			state = 2
@@ -38,30 +46,29 @@ func part1(lines []string) int {
 			pageUpdates = append(pageUpdates, u)
 		}
 	}
-	return getCorrectlyOrderedMiddleItemSum(preceedingPages, pageUpdates)
+	return preceedingPages, pageUpdates
 }
 
-// getCorrectlyOrderedMiddleItemSum finds the updates that are correctly ordered. Correct order is
-// defined as those pages that adhere to the "ordering rules" in preceedingPages. Each entry in
+// getMiddleItemIfCorrectlyOrdered finds the updates that are correctly ordered. Correct order is
+// defined as those pages that adhere to the "ordering rules" in orderingRules. Each entry in
 // that map holds all pages that must appear before it.
-func getCorrectlyOrderedMiddleItemSum(preceedingPages map[int][]int, updates [][]int) (res int) {
-out:
-	for _, u := range updates {
-		// accumulate the pages that must have already appeared before
-		alreadyBefore := []int{}
-		for _, p := range u {
-			// if the current page is already in the list of pages that must have appeared before...
-			if slices.Contains(alreadyBefore, p) {
-				continue out
-			}
-			alreadyBefore = append(alreadyBefore, preceedingPages[p]...)
+// It returns 0 if the pages are not correctly ordered, or the value of the middle item otherwise.
+func getMiddleItemIfCorrectlyOrdered(orderingRules map[int][]int, pages []int) int {
+	// accumulate the pages that must have already appeared before
+	alreadyBefore := []int{}
+	for _, p := range pages {
+		// if the current page is already in the list of pages that must have appeared before...
+		if slices.Contains(alreadyBefore, p) {
+			return 0
 		}
-		// we assume that there is an odd number of elements so there actually is a middle item
-		res += u[len(u)/2]
+		alreadyBefore = append(alreadyBefore, orderingRules[p]...)
 	}
-	return res
+	// we assume that there is an odd number of elements so there actually is a middle item
+	return pages[len(pages)/2]
 }
 
 func part2(lines []string) int {
+	// preceedingPages, pageUpdates := readInstructions(lines)
+	// return getCorrectlyOrderedMiddleItemSum(preceedingPages, pageUpdates)
 	return 0
 }
