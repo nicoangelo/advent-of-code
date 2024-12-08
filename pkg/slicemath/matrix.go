@@ -59,7 +59,7 @@ func (m *Matrix2D[T]) FindFirst(find T) (Coord2D, bool) {
 }
 
 func (m *Matrix2D[T]) IsOutOfBounds(c Coord2D) bool {
-	return c.X < 0 || c.Y < 0 || c.X > m.size.X-1 || c.Y > m.size.Y-1
+	return c.X < 0 || c.Y < 0 || c.X > m.MaxX() || c.Y > m.MaxY()
 }
 
 func (m *Matrix2D[T]) MaxX() int {

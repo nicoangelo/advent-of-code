@@ -37,6 +37,6 @@ func TestPart1(t *testing.T) {
 
 func TestPart2(t *testing.T) {
 	res := part2(testData)
-	want := 0
+	want := 6
 	assert.Equal(t, want, res)
 }

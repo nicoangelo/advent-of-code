@@ -12,12 +12,19 @@ var lookingDirMap map[rune]slicemath.Coord2D = map[rune]slicemath.Coord2D{
 	'v': {X: 0, Y: 1},
 	'<': {X: -1, Y: 0},
 }
+var directions []slicemath.Coord2D = []slicemath.Coord2D{
+	{X: 0, Y: -1},
+	{X: 1, Y: 0},
+	{X: 0, Y: 1},
+	{X: -1, Y: 0},
+}
 
 type MatrixWalker struct {
-	matrix     slicemath.Matrix2D[rune]
-	currPos    slicemath.Coord2D
-	visited    map[slicemath.Coord2D]bool
-	lookingDir rune
+	matrix          slicemath.Matrix2D[rune]
+	currPos         slicemath.Coord2D
+	visited         map[slicemath.Coord2D]bool
+	currentDirIndex int
+	turns           map[slicemath.Coord2D]bool
 }
 
 func (mw *MatrixWalker) Init(m *slicemath.Matrix2D[rune]) {
@@ -26,8 +33,9 @@ func (mw *MatrixWalker) Init(m *slicemath.Matrix2D[rune]) {
 
 func (mw *MatrixWalker) SetStart() {
 	mw.visited = map[slicemath.Coord2D]bool{}
-	mw.lookingDir = '^'
-	currPos, ok := mw.matrix.FindFirst(mw.lookingDir)
+	mw.turns = map[slicemath.Coord2D]bool{}
+	mw.currentDirIndex = 0
+	currPos, ok := mw.matrix.FindFirst('^')
 	if ok {
 		mw.currPos = currPos
 	} else {
@@ -35,19 +43,19 @@ func (mw *MatrixWalker) SetStart() {
 	}
 }
 
-func (mw *MatrixWalker) Walk() bool {
-	dir := lookingDirMap[mw.lookingDir]
-	lookAtPos := mw.currPos.Add(dir)
+func (mw *MatrixWalker) Walk() (more bool, turned bool) {
+	lookAtPos := mw.currPos.Add(directions[mw.currentDirIndex])
 	if mw.matrix.IsOutOfBounds(lookAtPos) {
-		return false
+		return false, false
 	}
 	if mw.matrix.At(lookAtPos) == '#' {
+		mw.turns[mw.currPos] = true
 		mw.turnRight()
-		return true
+		return true, true
 	}
 	mw.currPos = lookAtPos
 	mw.visited[mw.currPos] = true
-	return true
+	return true, false
 }
 
 func (mw *MatrixWalker) VisitedPlaces() int {
@@ -72,15 +80,33 @@ func (mw *MatrixWalker) Print() {
 	}
 }
 
+func (mw *MatrixWalker) WouldTurnInDirection(dir slicemath.Coord2D) bool {
+	newPos := mw.currPos
+	for {
+		newPos = newPos.Add(dir)
+		if mw.matrix.IsOutOfBounds(newPos) {
+			return false
+		}
+		if _, ok := mw.turns[newPos]; ok {
+			return true
+		}
+		// if mw.matrix.At(newPos) == '#' {
+		// 	return true
+		// }
+	}
+}
+
+func (mw *MatrixWalker) GetRightTurnVector() slicemath.Coord2D {
+	if mw.currentDirIndex == 3 {
+		return directions[0]
+	}
+	return directions[mw.currentDirIndex+1]
+}
+
 func (mw *MatrixWalker) turnRight() {
-	switch mw.lookingDir {
-	case '^':
-		mw.lookingDir = '>'
-	case '>':
-		mw.lookingDir = 'v'
-	case 'v':
-		mw.lookingDir = '<'
-	case '<':
-		mw.lookingDir = '^'
+	if mw.currentDirIndex == 3 {
+		mw.currentDirIndex = 0
+	} else {
+		mw.currentDirIndex++
 	}
 }

@@ -21,7 +21,7 @@ func part1(lines []string) int {
 	mw.Init(linesToMatrix(lines))
 	mw.SetStart()
 	for {
-		if !mw.Walk() {
+		if more, _ := mw.Walk(); !more {
 			break
 		}
 	}
@@ -30,7 +30,27 @@ func part1(lines []string) int {
 }
 
 func part2(lines []string) int {
-	return 0
+	mw := &MatrixWalker{}
+	mw.Init(linesToMatrix(lines))
+	mw.SetStart()
+	newObstacles := 0
+	for {
+		more, turned := mw.Walk()
+		if !more {
+			break
+		}
+		if turned {
+			continue
+		}
+		// check if a turn here would hit an obstacle (i.e. known previous turn)
+		// assumption: potential obstacles have been visited before
+		tryTurn := mw.GetRightTurnVector()
+		if mw.WouldTurnInDirection(tryTurn) {
+			newObstacles += 1
+		}
+	}
+	// mw.Print()
+	return newObstacles
 }
 
 func linesToMatrix(lines []string) *slicemath.Matrix2D[rune] {
