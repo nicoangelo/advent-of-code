@@ -2,6 +2,7 @@ package day7
 
 import (
 	"log"
+	"os/user"
 	"strconv"
 	"strings"
 
@@ -10,7 +11,9 @@ import (
 
 func PrintSolutions() {
 
-	lines := reader.ReadInputFile("./day7/input")
+	u, _ := user.Current()
+
+	lines := reader.ReadInputFile("./day7/input_" + strings.ToLower(string(u.Username[0])))
 
 	part1 := part1(lines)
 	log.Println("Part 1: ", part1)

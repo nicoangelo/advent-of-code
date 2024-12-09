@@ -2,12 +2,16 @@ package dayX
 
 import (
 	"log"
+	"os/user"
+	"strings"
 
 	"github.com/nicoangelo/aoc-pkg/reader"
 )
 
 func PrintSolutions() {
-	lines := reader.ReadInputFile("./dayX/input")
+	u, _ := user.Current()
+
+	lines := reader.ReadInputFile("./dayX/input_" + strings.ToLower(string(u.Username[0])))
 	part1 := part1(lines)
 	log.Println("Part 1: ", part1)
 
