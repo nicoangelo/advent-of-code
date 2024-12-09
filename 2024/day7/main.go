@@ -1,6 +1,7 @@
 package day7
 
 import (
+	"fmt"
 	"log"
 	"os/user"
 	"strconv"
@@ -65,7 +66,7 @@ func part2(lines []string) int {
 			permutations[nOps] = perm
 		}
 
-		// log.Println("permutations calculated")
+		// log.Println("permutations calculated", nOps, len(perm))
 
 		total += testOperators2(results[i], numbers[i], perm)
 
@@ -191,15 +192,10 @@ func testOperators2(result uint64, numbers []uint64, permutations [][]int) uint6
 
 		out := numbers[0]
 
-		i := 0
-
-		for i < len(v) {
+		for i := 0; i < len(v); i++ {
+			temp := out
 			if v[i] == 0 {
-				out = out * numbers[i+1]
-			} else if v[i] == 1 {
-				out += numbers[i+1]
-			} else {
-				new := int(numbers[i+1])
+				new := int64(numbers[i+1])
 				// fmt.Println(new)
 
 				for new >= 1 {
@@ -208,12 +204,18 @@ func testOperators2(result uint64, numbers []uint64, permutations [][]int) uint6
 					// fmt.Println(new)
 				}
 				out = out + numbers[i+1]
+			} else if v[i] == 1 {
+				out += numbers[i+1]
+			} else if v[i] == 2 {
+				out = out * numbers[i+1]
 			}
 
-			i += 1
+			if out < temp {
+				fmt.Println("Overflow")
+			}
 
 			// skipping early if result gets to high
-			if out > uint64(result) {
+			if out > result {
 				continue
 			}
 
@@ -225,6 +227,7 @@ func testOperators2(result uint64, numbers []uint64, permutations [][]int) uint6
 
 	}
 
+	// fmt.Println(result, numbers)
 	return (0)
 
 }
