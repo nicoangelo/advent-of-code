@@ -32,7 +32,12 @@ func part1(lines []string) int {
 }
 
 func part2(lines []string) int {
-	return 0
+	antennas := getAntennas(lines)
+
+	width := len(lines[0])
+	height := len(lines)
+
+	return (getAntinodes2(antennas, width, height))
 }
 
 func getAntennas(lines []string) map[byte][][]int {
@@ -111,9 +116,85 @@ func getAntinodes(nodesMap map[byte][][]int, width int, height int) int {
 	}
 
 	return count
+}
+
+func getAntinodes2(nodesMap map[byte][][]int, width int, height int) int {
+
+	antinodes := map[node]bool{}
+	count := 0
+
+	for _, nodes := range nodesMap {
+		for i := 0; i < len(nodes); i++ {
+			for j := i + 1; j < len(nodes); j++ {
+
+				dist := node{nodes[i][0] - nodes[j][0], nodes[i][1] - nodes[j][1]}
+
+				minDist := getMinDist(dist)
+
+				an := node{nodes[i][0], nodes[i][1]}
+				tempAn := an
+
+				for (0 <= tempAn.x) && (tempAn.x < height) &&
+					(0 <= tempAn.y) && (tempAn.y < width) {
+
+					_, okay := antinodes[tempAn]
+
+					if !okay {
+						antinodes[tempAn] = true
+						count += 1
+					}
+
+					tempAn = substractDist(tempAn, minDist)
+				}
+
+				// we already looked at an
+				tempAn = addDist(an, minDist)
+
+				for (0 <= tempAn.x) && (tempAn.x < height) &&
+					(0 <= tempAn.y) && (tempAn.y < width) {
+
+					_, okay := antinodes[tempAn]
+
+					if !okay {
+						antinodes[tempAn] = true
+						count += 1
+					}
+
+					tempAn = addDist(tempAn, minDist)
+				}
+
+			}
+		}
+	}
+
+	return count
 
 }
 
 type node struct {
 	x, y int
+}
+
+func addDist(oldNode node, dist node) node {
+	newNode := node{oldNode.x + dist.x, oldNode.y + dist.y}
+	return (newNode)
+}
+
+func substractDist(oldNode node, dist node) node {
+	newNode := node{oldNode.x - dist.x, oldNode.y - dist.y}
+	return (newNode)
+}
+
+func getMinDist(dist node) node {
+	div := GCD(dist.x, dist.y)
+	return (node{dist.x / div, dist.y / div})
+}
+
+func GCD(a, b int) int {
+	for b != 0 {
+		t := b
+		b = a % b
+		a = t
+	}
+	return a
 }
