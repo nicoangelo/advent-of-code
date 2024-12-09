@@ -75,6 +75,7 @@ func part2(lines []string) int {
 }
 
 func readEquations(lines []string) (numbers [][]uint64, result []uint64) {
+
 	numbers = [][]uint64{}
 	result = []uint64{}
 
@@ -198,28 +199,27 @@ func testOperators2(result uint64, numbers []uint64, permutations [][]int) uint6
 			} else if v[i] == 1 {
 				out += numbers[i+1]
 			} else {
+				new := int(numbers[i+1])
+				// fmt.Println(new)
 
-				new := float64(numbers[i+1])
-
-				for new > 1 {
+				for new >= 1 {
 					new = new / 10
 					out = out * 10
+					// fmt.Println(new)
 				}
-
 				out = out + numbers[i+1]
 			}
 
-			// log.Println(out, result)
-
 			i += 1
 
+			// skipping early if result gets to high
 			if out > uint64(result) {
 				continue
 			}
 
 		}
 
-		if out == uint64(result) {
+		if out == result {
 			return (result)
 		}
 
