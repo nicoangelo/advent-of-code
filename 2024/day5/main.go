@@ -53,6 +53,7 @@ func readInstructions(lines []string) (preceedingPages map[int][]int, pageUpdate
 // defined as those pages that adhere to the "ordering rules" in orderingRules. Each entry in
 // that map holds all pages that must appear before it.
 // It returns 0 if the pages are not correctly ordered, or the value of the middle item otherwise.
+
 func getMiddleItemIfCorrectlyOrdered(orderingRules map[int][]int, pages []int) int {
 	// accumulate the pages that must have already appeared before
 	alreadyBefore := []int{}
