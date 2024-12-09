@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/nicoangelo/aoc-pkg/reader"
-	"github.com/nicoangelo/aoc-pkg/sliceutils"
 )
 
 func PrintSolutions() {
@@ -22,7 +21,7 @@ func PrintSolutions() {
 
 func part1(lines []string) int {
 
-	total := 0
+	total := uint64(0)
 
 	numbers, results := readEquations(lines)
 
@@ -39,33 +38,66 @@ func part1(lines []string) int {
 
 	}
 
-	return total
+	return int(total)
 }
 
 func part2(lines []string) int {
-	return 0
+
+	total := uint64(0)
+
+	numbers, results := readEquations(lines)
+
+	permutations := map[int][][]int{}
+
+	for i := 0; i < len(results); i++ {
+
+		// log.Println(i, numbers[i], results[i], total)
+
+		nOps := len(numbers[i]) - 1
+
+		perm, okay := permutations[nOps]
+
+		if !okay {
+			perm = permuteNX(nOps)
+			permutations[nOps] = perm
+		}
+
+		// log.Println("permutations calculated")
+
+		total += testOperators2(results[i], numbers[i], perm)
+
+	}
+
+	return int(total)
 }
 
-func readEquations(lines []string) (numbers [][]int, result []int) {
-	numbers = [][]int{}
-	result = []int{}
+func readEquations(lines []string) (numbers [][]uint64, result []uint64) {
+	numbers = [][]uint64{}
+	result = []uint64{}
 
 	for _, l := range lines {
 
 		parts := strings.Split(l, " ")
 		parts[0] = strings.TrimSuffix(parts[0], ":")
 
-		u := sliceutils.SliceConvert(parts, strconv.Atoi)
+		v, _ := strconv.ParseUint(parts[0], 10, 64)
+		result = append(result, v)
 
-		result = append(result, u[0])
-		numbers = append(numbers, u[1:])
+		nums := []uint64{}
+
+		for i := 1; i < len(parts); i++ {
+			w, _ := strconv.ParseUint(parts[i], 10, 64)
+			nums = append(nums, w)
+		}
+
+		numbers = append(numbers, nums)
 
 	}
 
 	return numbers, result
 }
 
-func testOperators(result int, numbers []int, permutations [][]int) int {
+func testOperators(result uint64, numbers []uint64, permutations [][]int) uint64 {
 
 	for _, v := range permutations {
 
@@ -125,4 +157,71 @@ func selectNX(n int, x int) [][]int {
 	}
 
 	return (selected)
+}
+
+///////////////////////// part2
+
+func permuteNX(x int) [][]int {
+
+	s := [][]int{}
+
+	if x == 1 {
+		s = append(s, []int{0})
+		s = append(s, []int{1})
+		s = append(s, []int{2})
+	} else {
+		part := permuteNX(x - 1)
+		for _, v := range part {
+			s = append(s, append(v, 0))
+			s = append(s, append(v, 1))
+			s = append(s, append(v, 2))
+		}
+	}
+
+	return (s)
+}
+
+func testOperators2(result uint64, numbers []uint64, permutations [][]int) uint64 {
+
+	for _, v := range permutations {
+
+		out := numbers[0]
+
+		i := 0
+
+		for i < len(v) {
+			if v[i] == 0 {
+				out = out * numbers[i+1]
+			} else if v[i] == 1 {
+				out += numbers[i+1]
+			} else {
+
+				new := float64(numbers[i+1])
+
+				for new > 1 {
+					new = new / 10
+					out = out * 10
+				}
+
+				out = out + numbers[i+1]
+			}
+
+			// log.Println(out, result)
+
+			i += 1
+
+			if out > uint64(result) {
+				continue
+			}
+
+		}
+
+		if out == uint64(result) {
+			return (result)
+		}
+
+	}
+
+	return (0)
+
 }
