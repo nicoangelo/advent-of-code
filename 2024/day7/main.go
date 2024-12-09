@@ -1,4 +1,4 @@
-package dayX
+package day7
 
 import (
 	"log"
@@ -10,7 +10,9 @@ import (
 )
 
 func PrintSolutions() {
-	lines := reader.ReadInputFile("./dayX/input")
+
+	lines := reader.ReadInputFile("./day7/input")
+
 	part1 := part1(lines)
 	log.Println("Part 1: ", part1)
 
@@ -19,6 +21,8 @@ func PrintSolutions() {
 }
 
 func part1(lines []string) int {
+
+	total := 0
 
 	numbers, results := readEquations(lines)
 
@@ -31,9 +35,11 @@ func part1(lines []string) int {
 			permutations = append(permutations, selectNX(n, nOps)...)
 		}
 
+		total += testOperators(results[i], numbers[i], permutations)
+
 	}
 
-	return 0
+	return total
 }
 
 func part2(lines []string) int {
@@ -57,6 +63,34 @@ func readEquations(lines []string) (numbers [][]int, result []int) {
 	}
 
 	return numbers, result
+}
+
+func testOperators(result int, numbers []int, permutations [][]int) int {
+
+	for _, v := range permutations {
+
+		out := numbers[0]
+
+		i := 0
+
+		for i < len(v) {
+			if v[i] == 1 {
+				out = out * numbers[i+1]
+			} else {
+				out += numbers[i+1]
+			}
+
+			i += 1
+		}
+
+		if out == result {
+			return (result)
+		}
+
+	}
+
+	return (0)
+
 }
 
 func selectNX(n int, x int) [][]int {

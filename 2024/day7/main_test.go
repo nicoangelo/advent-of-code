@@ -1,4 +1,4 @@
-package dayX
+package day7
 
 import (
 	"log/slog"
