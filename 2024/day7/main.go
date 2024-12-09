@@ -3,6 +3,7 @@ package day7
 import (
 	"fmt"
 	"log"
+	"math"
 	"os/user"
 	"strconv"
 	"strings"
@@ -194,19 +195,28 @@ func testOperators2(result uint64, numbers []uint64, permutations [][]int) uint6
 
 		for i := 0; i < len(v); i++ {
 			temp := out
+
+			// the order should not change results since all permutations are testes
+			// however the order/mapping of operators to 0/1/2 does change the results!!!
+
 			if v[i] == 0 {
-				new := int64(numbers[i+1])
-				// fmt.Println(new)
+				// append
+				new := float64(numbers[i+1])
 
 				for new >= 1 {
-					new = new / 10
+					new = math.Floor(new / 10)
 					out = out * 10
-					// fmt.Println(new)
 				}
 				out = out + numbers[i+1]
+
 			} else if v[i] == 1 {
+
+				//add
 				out += numbers[i+1]
+
 			} else if v[i] == 2 {
+
+				//multiply
 				out = out * numbers[i+1]
 			}
 
