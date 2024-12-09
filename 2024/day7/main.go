@@ -50,6 +50,10 @@ func part2(lines []string) int {
 
 	total := uint64(0)
 
+	// for i := 4; i < 5; i++ {
+	// 	fmt.Println(permuteNX(i))
+	// }
+
 	numbers, results := readEquations(lines)
 
 	permutations := map[int][][]int{}
@@ -68,8 +72,12 @@ func part2(lines []string) int {
 		}
 
 		// log.Println("permutations calculated", nOps, len(perm))
-
+		temp := total
 		total += testOperators2(results[i], numbers[i], perm)
+
+		if total < temp {
+			fmt.Println("Overflow")
+		}
 
 	}
 
@@ -172,23 +180,33 @@ func permuteNX(x int) [][]int {
 	s := [][]int{}
 
 	if x == 1 {
+		s = append(s, []int{2})
 		s = append(s, []int{0})
 		s = append(s, []int{1})
-		s = append(s, []int{2})
 	} else {
 		part := permuteNX(x - 1)
+
 		for _, v := range part {
-			s = append(s, append(v, 0))
-			s = append(s, append(v, 1))
-			s = append(s, append(v, 2))
+
+			for i := 0; i < 3; i++ {
+
+				// This is too stupid to be true
+				cpy := make([]int, len(v))
+				copy(cpy, v)
+				temp := append(cpy, i)
+
+				s = append(s, temp)
+			}
+			// fmt.Println("s: ", s)
+
 		}
 	}
-
 	return (s)
 }
 
 func testOperators2(result uint64, numbers []uint64, permutations [][]int) uint64 {
 
+	j := 0
 	for _, v := range permutations {
 
 		out := numbers[0]
@@ -207,17 +225,19 @@ func testOperators2(result uint64, numbers []uint64, permutations [][]int) uint6
 					new = math.Floor(new / 10)
 					out = out * 10
 				}
+
 				out = out + numbers[i+1]
 
 			} else if v[i] == 1 {
 
-				//add
-				out += numbers[i+1]
+				//multiply
+				out = out * numbers[i+1]
 
 			} else if v[i] == 2 {
 
-				//multiply
-				out = out * numbers[i+1]
+				//add
+				out = out + numbers[i+1]
+
 			}
 
 			if out < temp {
@@ -235,9 +255,14 @@ func testOperators2(result uint64, numbers []uint64, permutations [][]int) uint6
 			return (result)
 		}
 
+		j += 1
+
 	}
 
-	// fmt.Println(result, numbers)
+	if float64(j) != math.Pow(3, float64(len(numbers)-1)) {
+		fmt.Println(result, numbers, math.Pow(3, float64(len(numbers)-1)), j)
+	}
+
 	return (0)
 
 }
