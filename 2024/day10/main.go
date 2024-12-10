@@ -34,7 +34,7 @@ func part1(lines []string) int {
 
 			if matrix.At(curPos) == 0 {
 
-				nines := findPaths(matrix, curPos, map[slicemath.Coord2D]bool{})
+				nines := findNines(matrix, curPos, map[slicemath.Coord2D]bool{})
 
 				counts += len(nines)
 			}
@@ -45,7 +45,22 @@ func part1(lines []string) int {
 }
 
 func part2(lines []string) int {
-	return 0
+	matrix := linesToMatrix(lines)
+
+	counts := 0
+
+	for y := 0; y <= matrix.MaxY(); y++ {
+		for x := 0; x <= matrix.MaxX(); x++ {
+
+			curPos := slicemath.Coord2D{X: x, Y: y}
+
+			if matrix.At(curPos) == 0 {
+				counts += findTrails(matrix, curPos, 0)
+			}
+		}
+	}
+
+	return counts
 }
 
 func linesToMatrix(lines []string) *slicemath.Matrix2D[int] {
@@ -60,7 +75,7 @@ func linesToMatrix(lines []string) *slicemath.Matrix2D[int] {
 	return m
 }
 
-func findPaths(matrix *slicemath.Matrix2D[int], pos slicemath.Coord2D, nines map[slicemath.Coord2D]bool) map[slicemath.Coord2D]bool {
+func findNines(matrix *slicemath.Matrix2D[int], pos slicemath.Coord2D, nines map[slicemath.Coord2D]bool) map[slicemath.Coord2D]bool {
 
 	curVal := matrix.At(pos)
 
@@ -73,12 +88,33 @@ func findPaths(matrix *slicemath.Matrix2D[int], pos slicemath.Coord2D, nines map
 		newPos := pos.Add(d)
 		if !matrix.IsOutOfBounds(newPos) && matrix.At(newPos) == curVal+1 {
 
-			nines = findPaths(matrix, newPos, nines)
+			nines = findNines(matrix, newPos, nines)
 
 		}
 	}
 
 	return (nines)
+
+}
+
+func findTrails(matrix *slicemath.Matrix2D[int], pos slicemath.Coord2D, trails int) int {
+
+	curVal := matrix.At(pos)
+
+	if curVal == 9 {
+		return trails + 1
+	}
+
+	for _, d := range directions {
+		newPos := pos.Add(d)
+		if !matrix.IsOutOfBounds(newPos) && matrix.At(newPos) == curVal+1 {
+
+			trails = findTrails(matrix, newPos, trails)
+
+		}
+	}
+
+	return (trails)
 
 }
 
