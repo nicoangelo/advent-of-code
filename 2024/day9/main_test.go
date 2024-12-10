@@ -9,9 +9,7 @@ import (
 )
 
 var testData = []string{
-	"A Y",
-	"B X",
-	"C Z",
+	"2333133121414131402",
 }
 
 func TestMain(m *testing.M) {
@@ -24,7 +22,7 @@ func TestMain(m *testing.M) {
 
 func TestPart1(t *testing.T) {
 	res := part1(testData)
-	want := 0
+	want := 1928
 	assert.Equal(t, want, res)
 }
 

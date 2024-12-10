@@ -3,6 +3,7 @@ package day9
 import (
 	"log"
 	"os/user"
+	"strconv"
 	"strings"
 
 	"github.com/nicoangelo/aoc-pkg/reader"
@@ -20,7 +21,38 @@ func PrintSolutions() {
 }
 
 func part1(lines []string) int {
-	return 0
+	data := lines[0]
+	checksum := 0
+	backPos := len(data) - 1
+	frontPos := 0
+	backRemaining, _ := strconv.Atoi(string(data[len(data)-1]))
+
+	for i := 0; i <= backPos; i++ {
+		var fileId int
+		currData, _ := strconv.Atoi(string(data[i]))
+		if i%2 == 0 {
+			fileId = i / 2
+			if i == backPos {
+				currData = backRemaining
+			}
+			for j := 0; j < currData; j++ {
+				checksum += frontPos * fileId
+				frontPos++
+			}
+		} else if i%2 == 1 {
+			for k := 0; k < currData; k++ {
+				if backRemaining == 0 {
+					backPos -= 2
+					backRemaining, _ = strconv.Atoi(string(data[backPos]))
+				}
+				fileId = backPos / 2
+				checksum += frontPos * fileId
+				backRemaining--
+				frontPos++
+			}
+		}
+	}
+	return checksum
 }
 
 func part2(lines []string) int {
