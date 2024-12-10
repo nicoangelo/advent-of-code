@@ -32,6 +32,7 @@ func (mw *MatrixWalker) SetStart() {
 	currPos, ok := mw.matrix.FindFirst('^')
 	if ok {
 		mw.currPos = currPos
+		mw.visited[currPos] = true
 	} else {
 		panic("Cannot find starting position")
 	}
