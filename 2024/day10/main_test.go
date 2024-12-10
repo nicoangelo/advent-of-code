@@ -9,9 +9,14 @@ import (
 )
 
 var testData = []string{
-	"A Y",
-	"B X",
-	"C Z",
+	"89010123",
+	"78121874",
+	"87430965",
+	"96549874",
+	"45678903",
+	"32019012",
+	"01329801",
+	"10456732",
 }
 
 func TestMain(m *testing.M) {
@@ -24,7 +29,7 @@ func TestMain(m *testing.M) {
 
 func TestPart1(t *testing.T) {
 	res := part1(testData)
-	want := 0
+	want := 36
 	assert.Equal(t, want, res)
 }
 
