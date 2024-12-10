@@ -6,12 +6,6 @@ import (
 	"github.com/nicoangelo/aoc-pkg/slicemath"
 )
 
-var lookingDirMap map[rune]slicemath.Coord2D = map[rune]slicemath.Coord2D{
-	'^': {X: 0, Y: -1},
-	'>': {X: 1, Y: 0},
-	'v': {X: 0, Y: 1},
-	'<': {X: -1, Y: 0},
-}
 var directions []slicemath.Coord2D = []slicemath.Coord2D{
 	{X: 0, Y: -1},
 	{X: 1, Y: 0},
@@ -90,9 +84,6 @@ func (mw *MatrixWalker) WouldTurnInDirection(dir slicemath.Coord2D) bool {
 		if _, ok := mw.turns[newPos]; ok {
 			return true
 		}
-		// if mw.matrix.At(newPos) == '#' {
-		// 	return true
-		// }
 	}
 }
 
