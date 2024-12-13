@@ -1,9 +1,10 @@
 package main
 
 import (
+	"github.com/nicoangelo/advent-of-code-2024/day11"
+	"github.com/nicoangelo/advent-of-code-2024/day12"
 	"github.com/nicoangelo/advent-of-code-2024/day6"
 	"github.com/nicoangelo/advent-of-code-2024/day9"
-	"github.com/nicoangelo/advent-of-code-2024/day12"
 )
 
 func main() {

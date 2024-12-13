@@ -31,7 +31,7 @@ func part1(lines []string, blinks int) int {
 		next[stones[i]]++
 	}
 	totalFreqs := 0
-	for b := range blinks {
+	for range blinks {
 		numFreqs := make(map[int]int, len(next))
 		for k, v := range next {
 			numFreqs[k] = v
@@ -53,7 +53,6 @@ func part1(lines []string, blinks int) int {
 				totalFreqs += f
 			}
 		}
-		log.Println("Blinked", b, "times:", totalFreqs, "stones")
 	}
 	return totalFreqs
 }
