@@ -26,15 +26,15 @@ func part1(lines []string) int {
 	backPos := len(data) - 1
 	frontPos := 0
 	backRemaining, _ := strconv.Atoi(string(data[len(data)-1]))
+	fileId := 0
 
 	for i := 0; i <= backPos; i++ {
-		var fileId int
 		currData, _ := strconv.Atoi(string(data[i]))
+		if i == backPos {
+			currData = backRemaining
+		}
 		if i%2 == 0 {
 			fileId = i / 2
-			if i == backPos {
-				currData = backRemaining
-			}
 			for j := 0; j < currData; j++ {
 				checksum += frontPos * fileId
 				frontPos++
