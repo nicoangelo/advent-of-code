@@ -1,5 +1,7 @@
 package slicemath
 
+import "fmt"
+
 type Matrix2D[T comparable] struct {
 	values map[Coord2D]T
 	size   Coord2D
@@ -68,6 +70,16 @@ func (m *Matrix2D[T]) MaxX() int {
 
 func (m *Matrix2D[T]) MaxY() int {
 	return m.size.Y - 1
+}
+func (m *Matrix2D[T]) Print() {
+	for y := 0; y < m.MaxY(); y++ {
+		for x := 0; x < m.MaxX(); x++ {
+			pos := Coord2D{X: x, Y: y}
+			v := m.At(pos)
+			fmt.Printf("%v", v)
+		}
+		fmt.Println()
+	}
 }
 
 type Coord2D struct {
