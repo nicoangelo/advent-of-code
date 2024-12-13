@@ -4,7 +4,6 @@ import (
 	"log"
 	"math"
 	"os/user"
-	"slices"
 	"strconv"
 	"strings"
 
@@ -26,20 +25,37 @@ func PrintSolutions() {
 func part1(lines []string, blinks int) int {
 	line := lines[0]
 	stones := sliceutils.SliceConvert(strings.Split(line, " "), strconv.Atoi)
-	for range blinks {
-		for i := 0; i < len(stones); i++ {
-			if stones[i] == 0 {
-				stones[i] = 1
-			} else if isEven, len := digitLenIsEven(stones[i]); isEven {
-				newDigits := splitDigits(stones[i], len)
-				stones = slices.Replace(stones, i, i+1, newDigits...)
-				i++
+
+	next := map[int]int{}
+	for i := 0; i < len(stones); i++ {
+		next[stones[i]]++
+	}
+	totalFreqs := 0
+	for b := range blinks {
+		numFreqs := make(map[int]int, len(next))
+		for k, v := range next {
+			numFreqs[k] = v
+		}
+		next = map[int]int{}
+		totalFreqs = 0
+		for n, f := range numFreqs {
+			if n == 0 {
+				next[1] += f
+				totalFreqs += f
+			} else if isEven, len := digitLenIsEven(n); isEven {
+				n1, n2 := splitDigits(n, len)
+				next[n1] += f
+				totalFreqs += f
+				next[n2] += f
+				totalFreqs += f
 			} else {
-				stones[i] = stones[i] * 2024
+				next[n*2024] += f
+				totalFreqs += f
 			}
 		}
+		log.Println("Blinked", b, "times:", totalFreqs, "stones")
 	}
-	return len(stones)
+	return totalFreqs
 }
 
 func digitLenIsEven(n int) (even bool, len int) {
@@ -53,7 +69,7 @@ func digitLenIsEven(n int) (even bool, len int) {
 	return len%2 == 0, len
 }
 
-func splitDigits(n int, len int) []int {
+func splitDigits(n int, len int) (int, int) {
 	splitter := int(math.Pow10(len / 2))
-	return []int{n / splitter, n % splitter}
+	return n / splitter, n % splitter
 }
