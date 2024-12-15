@@ -21,31 +21,36 @@ func PrintSolutions() {
 }
 
 func part1(lines []string) int {
-	data := lines[0]
+	fs := lines[0]
 	checksum := 0
-	backPos := len(data) - 1
+	back_i := len(fs) - 1
 	frontPos := 0
-	backRemaining, _ := strconv.Atoi(string(data[len(data)-1]))
+	backRemaining, _ := strconv.Atoi(string(fs[back_i]))
 	fileId := 0
 
-	for i := 0; i <= backPos; i++ {
-		currData, _ := strconv.Atoi(string(data[i]))
-		if i == backPos {
-			currData = backRemaining
+out:
+	for i := 0; i <= back_i; i++ {
+		data, _ := strconv.Atoi(string(fs[i]))
+		if i == back_i {
+			data = backRemaining
 		}
 		if i%2 == 0 {
 			fileId = i / 2
-			for j := 0; j < currData; j++ {
+			for range data {
 				checksum += frontPos * fileId
 				frontPos++
 			}
 		} else if i%2 == 1 {
-			for k := 0; k < currData; k++ {
+			for range data {
 				if backRemaining == 0 {
-					backPos -= 2
-					backRemaining, _ = strconv.Atoi(string(data[backPos]))
+					back_i -= 2
+					backRemaining, _ = strconv.Atoi(string(fs[back_i]))
 				}
-				fileId = backPos / 2
+				// edge case: the last hole is bigger than the amount of blocks to move from the back
+				if back_i < i {
+					break out
+				}
+				fileId = back_i / 2
 				checksum += frontPos * fileId
 				backRemaining--
 				frontPos++
