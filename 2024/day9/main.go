@@ -66,19 +66,14 @@ func part2(lines []string) int {
 
 	fs := lines[0]
 	checksum := 0
-	back_i := len(fs) - 1
 	frontPos := 0
-	backRemaining, _ := strconv.Atoi(string(fs[back_i]))
 	fileId := 0
 
 	holes := map[int][]int{}           // key=size, value=[]frontPos
 	fileIdChecksums := map[int][]int{} // key=filedId, value=checksums for all its blocks
 
-	for i := 0; i <= back_i; i++ {
+	for i := 0; i <= len(fs)-1; i++ {
 		data, _ := strconv.Atoi(string(fs[i]))
-		if i == back_i {
-			data = backRemaining
-		}
 		if i%2 == 0 {
 			fileId = i / 2
 			for range data {
@@ -119,7 +114,7 @@ func popFittingHole(m map[int][]int, size int) int {
 				// if we found a hole that is bigger than size
 				// a new hole is available with a smaller size
 				newHoleSize := i - size
-				m[newHoleSize] = append(m[newHoleSize], v[0]+newHoleSize)
+				m[newHoleSize] = append(m[newHoleSize], v[0]+size)
 				sort.Slice(m[newHoleSize], func(i, j int) bool {
 					return m[newHoleSize][i] < m[newHoleSize][j]
 				})
