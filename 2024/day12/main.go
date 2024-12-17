@@ -48,7 +48,29 @@ func part1(lines []string) int {
 }
 
 func part2(lines []string) int {
-	return 0
+	res := 0
+
+	matrix := linesToMatrix(lines)
+	allCollections := map[rune]*FieldCollection{}
+
+	for y := 0; y <= matrix.MaxY(); y++ {
+		for x := 0; x <= matrix.MaxX(); x++ {
+			tile := slicemath.Coord2D{X: x, Y: y}
+			_, ok := allCollections[matrix.At(tile)]
+			if !ok {
+				allCollections[matrix.At(tile)] = &FieldCollection{fields: map[int]*Field{}, curFieldKey: 0}
+			}
+			allCollections[matrix.At(tile)].AddTile(matrix, tile)
+		}
+	}
+
+	for _, v := range allCollections {
+		for _, w := range v.fields {
+			res += w.area * len(w.edges)
+		}
+	}
+
+	return res
 }
 
 func linesToMatrix(lines []string) *slicemath.Matrix2D[rune] {

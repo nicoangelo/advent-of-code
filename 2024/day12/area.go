@@ -11,6 +11,8 @@ type Field struct {
 	tiles         map[slicemath.Coord2D]bool
 	area          int
 	circumference int
+	edges         map[slicemath.Coord2D]bool
+	nedges        int
 }
 
 func (fc *FieldCollection) AddTile(matrix *slicemath.Matrix2D[rune], curTile slicemath.Coord2D) {
@@ -37,7 +39,7 @@ func (fc *FieldCollection) AddTile(matrix *slicemath.Matrix2D[rune], curTile sli
 	}
 
 	if addField {
-		newField := &Field{tiles: map[slicemath.Coord2D]bool{}, area: 0, circumference: 0}
+		newField := &Field{tiles: map[slicemath.Coord2D]bool{}, area: 0, circumference: 0, edges: map[slicemath.Coord2D]bool{}, nedges: 0}
 		fc.curFieldKey++
 		fc.fields[fc.curFieldKey] = newField
 		fieldKey = fc.curFieldKey
@@ -50,6 +52,17 @@ func (fc *FieldCollection) AddTile(matrix *slicemath.Matrix2D[rune], curTile sli
 	curField.tiles[curTile] = true
 	curField.area += 1
 	curField.circumference += (4 - neighbours)
+
+	for _, dir := range edgedirections {
+		edge := curTile.Add(dir)
+		if _, ok := curField.edges[edge]; ok {
+			delete(curField.edges, edge)
+		} else {
+			curField.edges[edge] = true
+		}
+	}
+
+	curField.nedges = len(curField.edges)
 
 }
 
@@ -65,10 +78,21 @@ func (fc *FieldCollection) MergeFields(fieldKeys []int) int {
 				}
 				fc.fields[first].area += fc.fields[v].area
 				fc.fields[first].circumference += fc.fields[v].circumference
+
+				for edge := range fc.fields[v].edges {
+					if _, ok := fc.fields[first].edges[edge]; ok {
+						delete(fc.fields[first].edges, edge)
+					} else {
+						fc.fields[first].edges[edge] = true
+					}
+				}
 				delete(fc.fields, v)
 			}
 		}
 	}
+
+	fc.fields[first].nedges = len(fc.fields[first].edges)
+
 	return first
 }
 
@@ -77,4 +101,11 @@ var directions []slicemath.Coord2D = []slicemath.Coord2D{
 	{X: 1, Y: 0},
 	{X: 0, Y: 1},
 	{X: -1, Y: 0},
+}
+
+var edgedirections []slicemath.Coord2D = []slicemath.Coord2D{
+	{X: 0, Y: 0},
+	{X: 1, Y: 0},
+	{X: 0, Y: 1},
+	{X: 1, Y: 1},
 }
