@@ -26,3 +26,39 @@ func ReadInputFile(filepath string) (lines []string) {
 	}
 	return lines
 }
+
+// ReadInputIntoStruct reads the file from filepath and uses the provided reader
+// functions to transform the input into a single struct.
+// Empty lines will use the next reader function
+func ReadInputIntoStruct[T any](filepath string, readers ...func(string, *T)) (res *T) {
+	file, err := os.Open(filepath)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer file.Close()
+	if len(readers) == 0 {
+		log.Fatalln("Must provide at least one reader function.")
+	}
+	scanner := bufio.NewScanner(file)
+	res = new(T)
+	readerIndex := 0
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		if line == "" {
+			if readerIndex == len(readers)-1 {
+				readerIndex = 0
+			} else {
+				readerIndex++
+			}
+			continue
+		}
+		readers[readerIndex](line, res)
+
+	}
+	if err := scanner.Err(); err != nil {
+		log.Fatalln(err)
+	}
+	return res
+}

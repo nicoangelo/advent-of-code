@@ -1,5 +1,7 @@
 package intmath
 
+import "math"
+
 // Abs returns the absolute value of the given integer x
 func Abs(x int) int {
 	if x < 0 {
@@ -16,4 +18,17 @@ func Sign(x int) int {
 		return 0
 	}
 	return 1
+}
+
+// Min returns the smaller of the two integers x and y
+func Min(x int, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
+
+// Pow raises x to the power of y
+func Pow(x int, y int) int {
+	return int(math.Pow(float64(x), float64(y)))
 }
