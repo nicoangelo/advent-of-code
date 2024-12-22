@@ -15,15 +15,14 @@ func PrintSolutions() {
 	u, _ := user.Current()
 
 	lines := reader.ReadInputFile("./day9/input_" + strings.ToLower(string(u.Username[0])))
-	part1 := part1(lines)
+	part1 := part1(lines[0])
 	log.Println("Part 1: ", part1)
 
-	part2 := part2(lines)
+	part2 := part2(lines[0])
 	log.Println("Part 2: ", part2)
 }
 
-func part1(lines []string) int {
-	fs := lines[0]
+func part1(fs string) int {
 	checksum := 0
 	back_i := len(fs) - 1
 	frontPos := 0
@@ -62,9 +61,7 @@ out:
 	return checksum
 }
 
-func part2(lines []string) int {
-
-	fs := lines[0]
+func part2(fs string) int {
 	checksum := 0
 	frontPos := 0
 	fileId := 0
