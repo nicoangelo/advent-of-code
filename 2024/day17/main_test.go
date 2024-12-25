@@ -31,7 +31,7 @@ func TestMain(m *testing.M) {
 
 func TestPart1(t *testing.T) {
 	res := part1(&testData)
-	want := 4635635210
+	want := "4,6,3,5,6,3,5,2,1,0"
 	assert.Equal(t, want, res)
 }
 
