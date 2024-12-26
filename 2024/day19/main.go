@@ -30,9 +30,9 @@ func PrintSolutions() {
 }
 
 func part1(towels *Towels) int {
-	return towels.TryFitPatterns()
+	return towels.CountFittablePatterns()
 }
 
 func part2(towels *Towels) int {
-	return 0
+	return towels.CountAllFittablePatternCombinations()
 }
