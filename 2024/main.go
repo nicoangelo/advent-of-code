@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/nicoangelo/advent-of-code-2024/day19"
+	"github.com/nicoangelo/advent-of-code-2024/day23"
 )
 
 func main() {
@@ -20,4 +21,5 @@ func main() {
 	// day13.PrintSolutions()
 	// day17.PrintSolutions()
 	day19.PrintSolutions()
+	day23.PrintSolutions()
 }

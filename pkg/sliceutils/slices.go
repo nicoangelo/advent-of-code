@@ -1,5 +1,11 @@
 package sliceutils
 
+import (
+	"sort"
+	"strings"
+	"unicode"
+)
+
 func MakeSliceInit[T comparable](len int, defaultValue T) (res []T) {
 	res = make([]T, len)
 	for i := 0; i < len; i++ {
@@ -32,4 +38,12 @@ func RemoveAtIndex(slice []int, index int) []int {
 	slice_new := make([]int, len(slice))
 	copy(slice_new, slice)
 	return append(slice_new[:index], slice_new[index+1:]...)
+}
+
+func SortAlphabeticallyIgnoreCase(slice []string) {
+	sort.Slice(slice, func(i, j int) bool {
+		x := strings.Map(unicode.ToUpper, slice[i])
+		y := strings.Map(unicode.ToUpper, slice[j])
+		return x < y
+	})
 }
